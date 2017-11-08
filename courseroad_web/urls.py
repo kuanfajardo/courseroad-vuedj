@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from rest_framework import routers
 from courseroad import views
+from django.contrib import admin
 
 # router = routers.DefaultRouter()
 # router.register(r'users', views.UserViewSet)
@@ -26,6 +27,7 @@ from courseroad import views
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     # url(r'^', include(router.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^subjects/$', views.SubjectList.as_view()),
     url(r'^subjects/(?P<pk>[A-Za-z0-9.]+)/$', views.SubjectDetail.as_view()),
