@@ -1,6 +1,6 @@
 <template>
   <div class="subject-box">
-    <p align="right">subjects</p>
+    <p align="right">course/subjects</p>
   </div>
 </template>
 

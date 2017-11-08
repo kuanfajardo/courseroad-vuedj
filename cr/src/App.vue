@@ -182,6 +182,9 @@ export default {
     },
 
     drp (obj) {
+      if (obj.oldSemester === obj.newSemester && obj.oldYear === obj.newYear) {
+        return
+      }
       // Delete from old
       this.deleteSubjectAPI({
         year: obj.oldYear,
