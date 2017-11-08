@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <nav-bar v-on:addSubject="addSubject" :buckets="buckets" :semesters="semesters"></nav-bar>
+    <nav-bar v-on:addSubject="addSubject"
+             :buckets="buckets"
+             :semesters="semesters"
+             :courses="courses"
+             :selectedCourse="'6-3'"
+    ></nav-bar>
     <b-container class="main h-100" fluid>
       <b-row>
       <b-col cols="9" class="coll-1">
@@ -35,6 +40,9 @@ export default {
   name: 'app',
   data () {
     return {
+      courses: [
+        '6-3', '9', '5', '16', '2'
+      ],
       semesters: [
         {
           type: 's',

@@ -13,14 +13,17 @@
           <b-button size="sm" class="my-2 my-sm-0" type="text" v-on:click="addSubject">Add</b-button>
         </b-nav-form>
 
-        <b-nav-item-dropdown :text=dropdownText right class="mr-sm-2 dropdown">
+        <b-nav-item-dropdown :text=bucketText right class="mr-sm-2 bucketdrop">
           <b-dropdown-header id="header0">Buckets</b-dropdown-header>
           <b-dropdown-item v-for="bucket in buckets" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
           <b-dropdown-header id="header1">Semesters</b-dropdown-header>
           <b-dropdown-item v-for="semester in semesters" v-on:click=updateSemester(semester) href="#" :key="semester.id">{{ semester.name }}</b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item href="#">Login</b-nav-item>
+        <!--<b-nav-item href="#">Login</b-nav-item>-->
+        <b-nav-item-dropdown :text=courseText right class="mr-sm-2 coursedrop">
+          <b-dropdown-item v-for="course in courses" v-on:click=updateCourse(course) href="#" :key="course">{{ course }}</b-dropdown-item>
+        </b-nav-item-dropdown>
 
       </b-nav>
 
@@ -40,7 +43,7 @@
       }
     },
 
-    props: ['semesters', 'buckets'],
+    props: ['semesters', 'buckets', 'courses', 'selectedCourse'],
 
     methods: {
       updateSemester (semester) {
@@ -51,6 +54,10 @@
       updateBucket (bucket) {
         this.selectedSemesterID = -1
         this.selectedBucketID = bucket.id
+      },
+
+      updateCourse (course) {
+        this.selectedCourse = course
       },
 
       addSubject () {
@@ -65,7 +72,7 @@
     },
 
     computed: {
-      dropdownText: function () {
+      bucketText: function () {
         var name
 
         if (this.selectedSemesterID >= 0) { // semester selected
@@ -75,6 +82,10 @@
         }
 
         return 'Add To: ' + name
+      },
+
+      courseText: function () {
+        return 'Course: ' + this.selectedCourse
       },
 
       selectedYear: function () {
@@ -98,8 +109,12 @@
      background-color: #5e67b4;
   }
 
-  .dropdown {
+  .bucketdrop {
     padding-left: 2rem;
-    padding-right: 3rem;
+    padding-right: 0.5rem;
+  }
+
+  .coursedrop {
+
   }
 </style>
