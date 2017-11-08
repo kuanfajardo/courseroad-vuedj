@@ -191,22 +191,26 @@ export default {
       this.$http.post(url, body, {headers: headers})
         .then(response => {
           // SUCCESS
+          this.refreshData()
         }, response => {
           // HANDLE ERROR
         })
-
-      this.refreshData()
     },
 
     refreshData () {
       var headers = {
-        'authorization': 'Basic dXNlcjphZG1pbjEyMw==',
+        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
         'accept': 'application/json'
       }
 
-      this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
+      this.$http.get('http://127.0.0.1:8000/run/ABC/8/', {headers: headers})
         .then(response => {
-          this.years = response.body.years
+          this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
+            .then(response => {
+              this.years = response.body.years
+            }, response => {
+              // HANDLE ERROR
+            })
         }, response => {
           // HANDLE ERROR
         })
