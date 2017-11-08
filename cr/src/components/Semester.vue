@@ -7,8 +7,8 @@
       :class="{ dropzone : dropzone }">
 
     <b-container fluid class="semester-container pl-5 pr-5">
-      <b-row v-for="row in num_rows" class="row" :key="row">
-        <b-col v-for="(cls, index) in classes" class="class-col" cols="2" :key="cls.number">
+      <b-row v-for="(row, index) in row_classes" :key="index">
+        <b-col v-for="(cls, index) in row" class="class-col" cols="2" :key="cls.number">
           <class-button
               :text="cls.number"
               @click.native="toggle($event.target, cls, index)"
@@ -33,7 +33,7 @@
       return {
         dropzone: false,
         draggedSubject: null,
-        num_rows: parseInt(this.classes.length / 6) + 1
+        num_rows: parseInt(this.classes.length / 7) + 1
       }
     },
 
@@ -43,6 +43,20 @@
 
     components: {
       'class-button': ClassButton
+    },
+
+    computed: {
+      row_classes: function () {
+        var arr = []
+
+        for (var i = 0; i < this.num_rows; i++) {
+          var startIndex = i * 6
+          var endIndex = Math.min(this.classes.length, (i + 1) * 6)
+          arr.push(this.classes.slice(startIndex, endIndex))
+        }
+//        alert(JSON.stringify(arr))
+        return arr
+      }
     },
 
     methods: {

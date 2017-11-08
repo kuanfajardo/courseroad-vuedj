@@ -56,9 +56,13 @@ class UserSubjectList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
-        semester = str(self.request.stream.path).split('/')[-3]
-        print(semester)
-        serializer.save(semester=Semester.objects.filter(semester_id=semester)[0], user=self.request.user)
+        year = str(self.request.stream.path).split('/')[4]
+        semester = str(self.request.stream.path).split('/')[6]
+
+        year_obj = Year.objects.get(year_id=year, user=self.request.user)
+        semester_obj = Semester.objects.get(semester_id=semester, year=year_obj)
+
+        serializer.save(semester=semester_obj, user=self.request.user)
 
 class UserSubjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserSubject.objects.all()
