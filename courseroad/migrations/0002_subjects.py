@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                         instructors = 'No Instructors'
 
                     prerequisites = subject['prerequisites']
-                    if prerequisites is None:
+                    if prerequisites is None or prerequisites == "None":
                         prerequisites = ''
 
                     prerequisites = process_prereqs(prerequisites)
@@ -126,7 +126,7 @@ def process_clause(cls):
         clause = []
         for series in arr:
             series_arr = series.split(',')
-            series_arr = list(map(lambda x: x.strip(), series_arr))
+            series_arr = [x.strip() for x in series_arr]
 
             series_type = "or" if "or" in series_arr[-1] else "and"
 
@@ -137,7 +137,7 @@ def process_clause(cls):
                 last_arr = list(filter(lambda x: x.strip() != "", last_arr))
                 series_arr += last_arr
 
-            series_arr = list(map(lambda x: x.strip(), series_arr))
+            series_arr = [x.strip() for x in series_arr]
 
             clause.append(
                 {

@@ -12,7 +12,9 @@ from rest_framework import permissions
 from django.core.exceptions import MultipleObjectsReturned
 
 from courseroad.permissions import IsOwnerOrReadOnly
+from courseroad.engine import Road
 
+from courseroad.engine import run
 
 # class UserViewSet(viewsets.ModelViewSet):
 #     """
@@ -248,3 +250,44 @@ class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
 #     """
 #     queryset = Group.objects.all()
 #     serializer_class = GroupSerializer
+
+
+class Rules(APIView):
+
+    def get_subjects(self, user):
+        subjects = {}
+
+        for year in Year.objects.filter(user=user):
+            temp = {}
+
+            for semester in Semester.objects.filter(year=year):
+                subj = []
+
+                for subject in UserSubject.objects.filter(semester=semester):
+                    subj.append(subject.number)
+
+                temp[semester.semester_id] = subj
+
+            subjects[year.year_id] = temp
+
+        return subjects
+
+    def get(self, request, a, b, format=None):
+        subjects = self.get_subjects(request.user)
+
+        r = Road(subjects)
+        sat_dict = r.check_pre_reqs()
+
+        for subject in sat_dict:
+            subject_obj = UserSubject.objects.get(user=request.user, number=subject)
+            subject_obj.has_conflict = not sat_dict[subject]
+            subject_obj.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+        # req_file = open('courseroad/static/courseroad/6-3.req')
+        # for s in subjects:
+        #     print(s.number, s.semester.semester_id)
+        # run(subjects, req_file)
+
