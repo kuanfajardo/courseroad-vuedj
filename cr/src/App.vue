@@ -6,28 +6,41 @@
              :courses="courses"
              :selectedCourse="'6-3'"
     ></nav-bar>
+    <!--<button type="button" v-on:click="deleteSelectedSubjects">Delete</button>-->
     <b-container class="main h-100" fluid>
       <b-row>
-      <b-col cols="9" class="coll-1">
-        <year v-for="year in years"
-              :key="year.year_id"
-              :id="year.year_id"
-              :title="year.title"
-              :semesters="year.semesters"
-              v-on:toggle="toggle"
-              v-on:drp="drp">
-        </year>
-      </b-col>
+        <b-col cols="9" class="coll-1">
+          <year v-for="year in years"
+                :key="year.year_id"
+                :id="year.year_id"
+                :title="year.title"
+                :semesters="year.semesters"
+                v-on:toggle="toggle"
+                v-on:drp="drp">
+          </year>
+        </b-col>
       <b-col cols="3" class="coll-2">
-        <div class="mt-3 classes">
-          <h3 align="center">Classes</h3>
-          <p>{{ s }}</p>
-          <div>
-            <button type="button" v-on:click="deleteSelectedSubjects">Delete</button>
-          </div>
-        </div>
+        <b-container class="sidebar">
+          <b-row>
+            <b-col cols="4" class="sidebar1">
+<!---->       <info-box></info-box>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="4" class="sidebar2">
+<!---->       <subject-box></subject-box>
+            </b-col>
+          </b-row>
+        </b-container>
+        <!--<div class="mt-3 classes">-->
+          <!--<h3 align="center">Classes</h3>-->
+          <!--<p>{{ s }}</p>-->
+          <!--<div>-->
+<!---->
+          <!--</div>-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
       </b-col>
-        </b-row>
+      </b-row>
     </b-container>
   </div>
 </template>
@@ -35,6 +48,8 @@
 <script>
 import NavBar from './components/NavBar'
 import Year from './components/Year'
+import InfoBox from './components/InfoBox'
+import SubjectBox from './components/SubjectBox'
 
 export default {
   name: 'app',
@@ -125,7 +140,9 @@ export default {
 
   components: {
     NavBar,
-    Year
+    Year,
+    InfoBox,
+    SubjectBox
   },
 
   methods: {
@@ -273,6 +290,44 @@ export default {
 
 .coll-2 {
   height: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  /*top:50%;*/
+  /*left:0;*/
+  /*bottom: 50%;*/
+  /*top: 0;*/
+  /*right: 2%;*/
+  height: 20rem;
+  /*background-color: #0c5460;*/
+}
+
+.sidebar1 {
+  border-left-width: thin;
+  border-left-color: #5e67b4;
+  border-left-style: solid;
+
+  border-bottom-width: thin;
+  border-bottom-color: #5e67b4;
+  border-bottom-style: solid;
+
+  padding-left: 0;
+  margin-top: 0;
+  padding-right: 2rem;
+  /*background-color: #ffc520;*/
+  min-height: 13rem;
+}
+
+.sidebar2 {
+  border-left-width: thin;
+  border-left-color: #5e67b4;
+  border-left-style: solid;
+
+  padding-left: 0;
+  padding-right: 2rem;
+  background-color: rgba(252, 225, 229, 0.12);
+  min-height: 34rem;
 }
 
 body {
