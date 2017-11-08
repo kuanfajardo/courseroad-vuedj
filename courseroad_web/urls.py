@@ -44,7 +44,7 @@ urlpatterns = [
     url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/$', views.SemesterList.as_view()),
     url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/$', views.SemesterDetailLong.as_view()),
     url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/subjects/$', views.UserSubjectList.as_view()),
-    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/subjects/(?P<pk>[A-Za-z0-9.]+)/$', views.UserSubjectDetail.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/subjects/(?P<subject_id>[A-Za-z0-9.]+)/$', views.UserSubjectDetailLong.as_view()),
 
     url(r'^run/(?P<a>[A-Z]+)/(?P<b>[0-9]+)/$', views.Rules.as_view())
 ]

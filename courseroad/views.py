@@ -139,9 +139,51 @@ class SemesterDetailLong(APIView):
     def delete(self, request, year_id, username, semester_id, format=None):
         semester = self.get_object(year_id, semester_id, request.user)
         semester.delete()
-        return Response
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class UserSubjectDetailLong(APIView):
+    """
+    Retrieve, update or delete a user instance.
+    """
+    def get_object(self, year_id, semester_id, subject_id, user):
+        try:
+            print("yetet")
+
+            print(user.username)
+            year = Year.objects.get(user=user, year_id=year_id)
+            print(year)
+            semester = Semester.objects.get(year=year, semester_id=semester_id)
+            print(semester)
+            return UserSubject.objects.get(semester=semester, number=subject_id)
+        except:
+            raise Http404
+
+    def get(self, request, year_id, username, semester_id, subject_id, format=None):
+        print(subject_id, year_id, username, semester_id)
+        subject = self.get_object(year_id, semester_id, subject_id, request.user)
+        serializer = UserSubjectSerializer(subject)
+        return Response(serializer.data)
+
+    def put(self, request, year_id, username, semester_id, subject_id, format=None):
+        subject = self.get_object(year_id, semester_id, subject_id, request.user)
+        serializer = UserSubjectSerializer(subject, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, year_id, username, semester_id, subject_id, format=None):
+        print("dfg")
+        subject = self.get_object(year_id, semester_id, subject_id, request.user)
+        subject.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def options(self, request, *args, **kwargs):
+        print(request)
+        print("yeter")
+        return Response(status=status.HTTP_200_OK)
 # class UserDetail(APIView):
 #     """
 #     Retrieve, update or delete a user instance.
@@ -277,6 +319,7 @@ class Rules(APIView):
 
         r = Road(subjects)
         sat_dict = r.check_pre_reqs()
+        print(sat_dict)
 
         for subject in sat_dict:
             subject_obj = UserSubject.objects.get(user=request.user, number=subject)

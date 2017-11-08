@@ -149,21 +149,11 @@ export default {
 
     deleteSelectedSubjects () {
       // FIX LATER
-//      for (var subjectNumber in this.selectedSubjects) {
-//        if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
-//          alert(subjectNumber)
-//          var subject = this.selectedSubjects[subjectNumber]
-//          var index = subject.index
-//
-//          alert(JSON.stringify(this.selectedSubjects[subjectNumber]))
-//          this.years[subject.year].semesters[subject.semester].subjects.splice(index, 1)
-//          delete this.selectedSubject[subjectNumber]
-//          subject.target.classList.remove('selected')
-//        }
-//      }
-//      this.selectedSubjects = {}
-//      alert(JSON.stringify(this.selectedSubjects))
-//      this.s = this.updateText()
+      for (var subjectNumber in this.selectedSubjects) {
+        if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
+          this.deleteSubjectAPI(this.selectedSubjects[subjectNumber])
+        }
+      }
     },
 
     drp (obj) {
@@ -194,6 +184,24 @@ export default {
           this.refreshData()
         }, response => {
           // HANDLE ERROR
+        })
+    },
+
+    deleteSubjectAPI (subject) {
+      var headers = {
+        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
+        'accept': 'application/json'
+      }
+
+      var url = 'http://127.0.0.1:8000/users/juanfajardo/years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
+
+      this.$http.delete(url, {headers: headers})
+        .then(response => {
+          // SUCCESS
+          this.refreshData()
+        }, response => {
+          // HANDLE ERROR
+          alert(JSON.stringify(response))
         })
     },
 
