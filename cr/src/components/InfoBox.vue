@@ -3,13 +3,13 @@
     <b-container>
       <b-row id="row1">
         <b-col id="col1" cols="4">
-          <p></p>
+          <button type="button" id="deleteButton" v-on:click="deleteSubject" hidden>Delete</button>
         </b-col>
         <b-col cols="8" id="col2">
           <p align="right">8.01</p>
         </b-col>
       </b-row>
-      <b-row v-for="property in data">
+      <b-row v-for="(property, index) in data" :key="index">
         <b-col cols="4">
           <p class="small-text"><b>{{ property.label }}</b></p>
         </b-col>
@@ -42,6 +42,12 @@
             label: 'Description', value: 'Hello. Physics is HARD.'
           }
         ]
+      }
+    },
+
+    methods: {
+      deleteSubject () {
+        this.$emit('deleteSubject')
       }
     }
   }
@@ -83,5 +89,14 @@
     font-size: 1rem;
     margin: 0.5em 0 0 0;
     padding: 0;
+  }
+
+  #deleteButton {
+    margin-bottom: 3rem;
+    font-size: 0.8rem;
+    max-height: 70%;
+    border-radius: 0.5rem;
+    background-color: rgb(249, 247, 252);
+    border-color: #e7f2fa;
   }
 </style>

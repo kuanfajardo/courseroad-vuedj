@@ -6,7 +6,6 @@
              :courses="courses"
              :selectedCourse="'6-3'"
     ></nav-bar>
-    <!--<button type="button" v-on:click="deleteSelectedSubjects">Delete</button>-->
     <b-container class="main h-100" fluid>
       <b-row>
         <b-col cols="9" class="coll-1">
@@ -23,7 +22,7 @@
         <b-container class="sidebar">
           <b-row>
             <b-col cols="4" class="sidebar1">
-<!---->       <info-box></info-box>
+<!---->       <info-box v-on:deleteSubject="deleteSelectedSubjects"></info-box>
             </b-col>
           </b-row>
           <b-row>
