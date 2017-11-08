@@ -8,12 +8,15 @@
 
     <b-container fluid class="semester-container pl-5 pr-5">
       <b-row v-for="row in num_rows" class="row" :key="row">
-        <b-col v-for="cls in classes" class="class-col" cols="2" :key="cls">
+        <b-col v-for="(cls, index) in classes" class="class-col" cols="2" :key="cls.number">
           <class-button
-              :text="cls"
-              @click.native="toggle($event.target, cls)"
-              :hasConflict="false"
-              :semester="id">
+              :text="cls.number"
+              @click.native="toggle($event.target, cls, index)"
+              :hasConflict="cls.has_conflict"
+              :semester="id"
+              :index="index"
+              :year="year"
+              :obj="cls">
           </class-button>
         </b-col>
       </b-row>
@@ -35,7 +38,7 @@
     },
 
     props: [
-      'name', 'hidden', 'classes', 'id'
+      'hidden', 'classes', 'id', 'year'
     ],
 
     components: {
@@ -43,12 +46,14 @@
     },
 
     methods: {
-      toggle (target, cls) {
+      toggle (target, cls, index) {
         target.classList.toggle('selected')
         this.$emit('toggle', {
           target: target,
-          name: cls,
-          semester: this.id
+          name: cls.number,
+          semester: this.id,
+          year: this.year,
+          index: index
         })
       },
 
@@ -66,10 +71,16 @@
         this.dropzone = false
         var obj = JSON.parse(event.dataTransfer.getData('text'))
 
+        // Edit semester!
+        obj.semester_id = this.id
+
         this.$emit('drp', {
           oldSemester: obj.oldSemester,
+          oldYear: obj.oldYear,
+          index: obj.index,
+          newYear: this.year,
           newSemester: this.id,
-          subject: obj.subject
+          obj: obj.obj
         })
       }
     }

@@ -30,5 +30,19 @@ urlpatterns = [
     url(r'^subjects/$', views.SubjectList.as_view()),
     url(r'^subjects/(?P<pk>[A-Za-z0-9.]+)/$', views.SubjectDetail.as_view()),
     url(r'^users/$', views.UserList.as_view()),
-    url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view())
+    # url(r'^users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
+    url(r'^user_subjects/$', views.UserSubjectList.as_view()),
+    url(r'^user_subjects/(?P<pk>[A-Za-z0-9.]+)/$', views.UserSubjectDetail.as_view()),
+    # url(r'^years/$', views.YearList.as_view()),
+    # url(r'^years/(?P<pk>[A-Za-z0-9.]+)/$', views.YearDetail.as_view()),
+    url(r'^semesters/$', views.SemesterList.as_view()),
+    url(r'^semesters/(?P<pk>[A-Za-z0-9.]+)/$', views.SemesterDetail.as_view()),
+
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/$', views.UserDetail.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/$', views.YearList.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/$', views.YearDetail.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/$', views.SemesterList.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/$', views.SemesterDetailLong.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/subjects/$', views.UserSubjectList.as_view()),
+    url(r'^users/(?P<username>[A-Za-z0-9]+)/years/(?P<year_id>[0-9]+)/semesters/(?P<semester_id>[0-9]+)/subjects/(?P<pk>[A-Za-z0-9.]+)/$', views.UserSubjectDetail.as_view()),
 ]

@@ -14,13 +14,15 @@
       }
     },
 
-    props: ['hasConflict', 'text', 'semester'],
+    props: ['hasConflict', 'text', 'semester', 'index', 'year', 'obj'],
 
     methods: {
       dragStart (event) {
         var obj = JSON.stringify({
-          subject: this.text,
-          oldSemester: this.semester
+          index: this.index,
+          oldSemester: this.semester,
+          oldYear: this.year,
+          obj: this.obj
         })
 
         event.dataTransfer.setData('text', obj)

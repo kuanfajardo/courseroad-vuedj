@@ -6,7 +6,9 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import vueResource from 'vue-resource'
 
+Vue.use(vueResource)
 Vue.use(BootstrapVue)
 
 /* eslint-disable no-new */

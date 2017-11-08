@@ -4,14 +4,22 @@
     <b-container class="main h-100" fluid>
       <b-row>
       <b-col cols="9" class="coll-1">
+        <!--<year v-for="year in years"-->
+              <!--:key="year.id"-->
+              <!--:year="year.name"-->
+              <!--:yearID="year.id"-->
+              <!--:subjects="year.subjects"-->
+              <!--v-on:toggle="toggle"-->
+              <!--v-on:drp="drp"-->
+        <!--&gt;-->
+        <!--</year>-->
         <year v-for="year in years"
-              :key="year.id"
-              :year="year.name"
-              :yearID="year.id"
-              :subjects="year.subjects"
+              :key="year.year_id"
+              :id="year.year_id"
+              :title="year.title"
+              :semesters="year.semesters"
               v-on:toggle="toggle"
-              v-on:drp="drp"
-        >
+              v-on:drp="drp">
         </year>
       </b-col>
       <b-col cols="3" class="coll-2">
@@ -100,14 +108,8 @@ export default {
       ],
       semesterInFocus: 0,
       s: 'None Selected',
-      selectedSubjects: [],
-      selectedSubjectNames: [],
-
-      subjects: {
-        0: ['24.02', '18.02A', '8.01'],
-        1: ['3.091'],
-        2: ['12.020']
-      },
+      selectedSubjects: {},
+//      selectedSubjectNames: [],
 
       buckets: [
         {
@@ -123,43 +125,42 @@ export default {
       ],
 
       years: [
-        {
-          id: 0,
-          name: 'Freshman',
-          subjects: [
-            ['24.02', '18.02A', '8.01'],
-            ['3.091'],
-            ['12.020']
-          ]
-        },
-        {
-          id: 1,
-          name: 'Sophomore',
-          subjects: [
-            [],
-            [],
-            []
-          ]
-        },
-        {
-          id: 2,
-          name: 'Junior',
-          subjects: [
-            [],
-            [],
-            []
-          ]
-        },
-        {
-          id: 3,
-          name: 'Senior',
-          subjects: [
-            [],
-            [],
-            []
-          ]
-        }
+
       ]
+
+//          subjects: [
+//            ['24.02', '18.02A', '8.01'],
+//            ['3.091'],
+//            ['12.020']
+//          ]
+//        },
+//        {
+//          id: 1,
+//          name: 'Sophomore',
+//          subjects: [
+//            [],
+//            [],
+//            []
+//          ]
+//        },
+//        {
+//          id: 2,
+//          name: 'Junior',
+//          subjects: [
+//            [],
+//            [],
+//            []
+//          ]
+//        },
+//        {
+//          id: 3,
+//          name: 'Senior',
+//          subjects: [
+//            [],
+//            [],
+//            []
+//          ]
+//        }
     }
   },
 
@@ -170,63 +171,121 @@ export default {
 
   methods: {
     addSubject (obj) {
-      this.years[obj.year].subjects[obj.semester].push(obj.subject)
+      this.addSubjectAPI(obj)
+//      this.years[obj.year].semesters[obj.semester].subjects.push(obj)
     },
 
-    toggle (subject) {
-      if (this.selectedSubjectNames.includes(subject.name)) {
-        this.selectedSubjects.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
-        this.selectedSubjectNames.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
+    toggle (obj) {
+      var alreadySelected = this.selectedSubjects.hasOwnProperty(obj.name)
+
+      if (alreadySelected) {
+        delete this.selectedSubjects[obj.name]
       } else {
-        this.selectedSubjects.push(subject)
-        this.selectedSubjectNames.push(subject.name)
+        this.selectedSubjects[obj.name] = obj
       }
+
+//      if (this.selectedSubjectNames.includes(subject.name)) {
+//        this.selectedSubjects.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
+//        this.selectedSubjectNames.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
+//      } else {
+//        this.selectedSubjects.push(subject)
+//        this.selectedSubjectNames.push(subject.name)
+//      }
 
       this.s = this.updateText()
     },
 
     updateText () {
-      if (this.selectedSubjectNames.length === 0) {
-        return 'None Selected'
-      } else if (this.selectedSubjectNames.length === 1) {
-        return this.selectedSubjectNames[0]
-      } else {
-        return this.selectedSubjectNames.length + ' subjects selected.'
-      }
+      return 'SDFGH'
+//      if (this.selectedSubjectNames.length === 0) {
+//        return 'None Selected'
+//      } else if (this.selectedSubjectNames.length === 1) {
+//        return this.selectedSubjectNames[0]
+//      } else {
+//        return this.selectedSubjectNames.length + ' subjects selected.'
+//      }
     },
 
     deleteSelectedSubjects () {
-      for (var i = 0; i < this.selectedSubjectNames.length; i++) {
-        var subject = this.selectedSubjects[i]
+      for (var subjectNumber in this.selectedSubjects) {
+        if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
+          alert(subjectNumber)
+          var subject = this.selectedSubjects[subjectNumber]
+          var index = subject.index
 
-        var year = parseInt(subject.semester / 3)
-        var semester = subject.semester % 3
-
-        var index = this.years[year].subjects[semester].indexOf(subject.name)
-        this.years[year].subjects[semester].splice(index, 1)
-
-        subject.target.classList.remove('selected')
+          alert(JSON.stringify(this.selectedSubjects[subjectNumber]))
+          this.years[subject.year].semesters[subject.semester].subjects.splice(index, 1)
+          delete this.selectedSubject[subjectNumber]
+//          subject.target.classList.remove('selected')
+        }
       }
-
-      this.selectedSubjects = []
-      this.selectedSubjectNames = []
+//      this.selectedSubjects = {}
+      alert(JSON.stringify(this.selectedSubjects))
       this.s = this.updateText()
     },
 
     drp (obj) {
       // Delete from old
-      var year = parseInt(obj.oldSemester / 3)
-      var semester = obj.oldSemester % 3
-
-      var index = this.years[year].subjects[semester].indexOf(obj.subject)
-      this.years[year].subjects[semester].splice(index, 1)
+      var index = obj.index // this.years[obj.oldYear].semesters[obj.oldSemester].indexOf(obj.subject)
+      this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
 
       // Add to new
-      year = parseInt(obj.newSemester / 3)
-      semester = obj.newSemester % 3
+      this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
+    },
 
-      this.years[year].subjects[semester].push(obj.subject)
+    addSubjectAPI (subject) {
+      var headers = {
+        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
+        'accept': 'application/json'
+      }
+
+      var body = {
+        'title': 'A Testt',
+        'number': subject.number
+      }
+
+      var url = 'http://127.0.0.1:8000/users/juanfajardo/years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
+
+      this.$http.post(url, body, {headers: headers})
+        .then(response => {
+//          alert(JSON.stringify(response))
+        }, response => {
+//          alert(JSON.stringify(response))
+        })
+
+      this.refreshData()
+    },
+
+    refreshData () {
+      var headers = {
+        'authorization': 'Basic dXNlcjphZG1pbjEyMw==',
+        'accept': 'application/json'
+      }
+//      alert('refreshing')
+      this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
+        .then(response => {
+//          alert(JSON.stringify(response.body.years))
+          this.years = response.body.years
+        }, response => {
+//          alert(response.status)
+        })
     }
+  },
+
+  created: function () {
+//    var headers = {
+//      'authorization': 'Basic dXNlcjphZG1pbjEyMw==',
+//      'accept': 'application/json'
+//    }
+//    alert('creating')
+//    this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
+//      .then(response => {
+//        alert(JSON.stringify(response.body.years))
+//        this.years = response.body.years
+//      }, response => {
+//        alert(response.status)
+//      })
+    this.refreshData()
   }
 }
 </script>
