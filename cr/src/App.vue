@@ -158,11 +158,22 @@ export default {
 
     drp (obj) {
       // Delete from old
-      var index = obj.index
-      this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
+      this.deleteSubjectAPI({
+        year: obj.oldYear,
+        semester: obj.oldSemester,
+        name: obj.obj.number
+      })
+
+//      var index = obj.index
+//      this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
 
       // Add to new
-      this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
+      this.addSubjectAPI({
+        year: obj.newYear,
+        semester: obj.newSemester,
+        number: obj.obj.number
+      })
+//      this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
     },
 
     addSubjectAPI (subject) {
