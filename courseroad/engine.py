@@ -452,7 +452,12 @@ class Road:
 
 
     def sat_req(self, subject, already_taken, currently_taking):
-        subject_obj = Subject.objects.get(subjectId=subject)
+        # TODO: HANDLE BAD SUBJECTS
+        try:
+            subject_obj = Subject.objects.get(subjectId=subject)
+        except:
+            print(subject)
+            raise Exception
         requisites = json.loads(subject_obj.prerequisites)
 
         pre_reqs = requisites['pre']
