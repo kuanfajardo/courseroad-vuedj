@@ -4,17 +4,6 @@
       {{ title }}
     </span>
     <br>
-    <!--<semester v-for="semester in sem"-->
-              <!--:key="yearID * 3 + semester['id']"-->
-              <!--:id="yearID * 3 + semester['id']"-->
-              <!--:class="semester['name'].toLowerCase()"-->
-              <!--:hidden="semester['hidden']"-->
-              <!--:classes="subjects[semester['id']]"-->
-              <!--v-on:toggle="toggle"-->
-              <!--v-on:drp="drp">-->
-    <!--</semester>-->
-
-
     <semester v-for="semester in semesters"
               :key="semester.semester_id"
               :id="semester.semester_id"
@@ -34,25 +23,6 @@
   export default {
     data () {
       return {
-//        sem: [
-//          {
-//            id: 0,
-//            name: 'Fall',
-//            hidden: false
-//          },
-//
-//          {
-//            id: 1,
-//            name: 'IAP',
-//            hidden: true
-//          },
-//
-//          {
-//            id: 2,
-//            name: 'Spring',
-//            hidden: false
-//          }
-//        ]
       }
     },
 

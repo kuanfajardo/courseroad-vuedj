@@ -4,15 +4,6 @@
     <b-container class="main h-100" fluid>
       <b-row>
       <b-col cols="9" class="coll-1">
-        <!--<year v-for="year in years"-->
-              <!--:key="year.id"-->
-              <!--:year="year.name"-->
-              <!--:yearID="year.id"-->
-              <!--:subjects="year.subjects"-->
-              <!--v-on:toggle="toggle"-->
-              <!--v-on:drp="drp"-->
-        <!--&gt;-->
-        <!--</year>-->
         <year v-for="year in years"
               :key="year.year_id"
               :id="year.year_id"
@@ -106,11 +97,6 @@ export default {
           id: 11
         }
       ],
-      semesterInFocus: 0,
-      s: 'None Selected',
-      selectedSubjects: {},
-//      selectedSubjectNames: [],
-
       buckets: [
         {
           type: 'b',
@@ -123,44 +109,9 @@ export default {
           id: 1
         }
       ],
-
-      years: [
-
-      ]
-
-//          subjects: [
-//            ['24.02', '18.02A', '8.01'],
-//            ['3.091'],
-//            ['12.020']
-//          ]
-//        },
-//        {
-//          id: 1,
-//          name: 'Sophomore',
-//          subjects: [
-//            [],
-//            [],
-//            []
-//          ]
-//        },
-//        {
-//          id: 2,
-//          name: 'Junior',
-//          subjects: [
-//            [],
-//            [],
-//            []
-//          ]
-//        },
-//        {
-//          id: 3,
-//          name: 'Senior',
-//          subjects: [
-//            [],
-//            [],
-//            []
-//          ]
-//        }
+      s: 'None Selected',
+      selectedSubjects: {},
+      years: []
     }
   },
 
@@ -183,16 +134,6 @@ export default {
       } else {
         this.selectedSubjects[obj.name] = obj
       }
-
-//      if (this.selectedSubjectNames.includes(subject.name)) {
-//        this.selectedSubjects.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
-//        this.selectedSubjectNames.splice(this.selectedSubjectNames.indexOf(subject.name), 1)
-//      } else {
-//        this.selectedSubjects.push(subject)
-//        this.selectedSubjectNames.push(subject.name)
-//      }
-
-      this.s = this.updateText()
     },
 
     updateText () {
@@ -207,26 +148,27 @@ export default {
     },
 
     deleteSelectedSubjects () {
-      for (var subjectNumber in this.selectedSubjects) {
-        if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
-          alert(subjectNumber)
-          var subject = this.selectedSubjects[subjectNumber]
-          var index = subject.index
-
-          alert(JSON.stringify(this.selectedSubjects[subjectNumber]))
-          this.years[subject.year].semesters[subject.semester].subjects.splice(index, 1)
-          delete this.selectedSubject[subjectNumber]
+      // FIX LATER
+//      for (var subjectNumber in this.selectedSubjects) {
+//        if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
+//          alert(subjectNumber)
+//          var subject = this.selectedSubjects[subjectNumber]
+//          var index = subject.index
+//
+//          alert(JSON.stringify(this.selectedSubjects[subjectNumber]))
+//          this.years[subject.year].semesters[subject.semester].subjects.splice(index, 1)
+//          delete this.selectedSubject[subjectNumber]
 //          subject.target.classList.remove('selected')
-        }
-      }
+//        }
+//      }
 //      this.selectedSubjects = {}
-      alert(JSON.stringify(this.selectedSubjects))
-      this.s = this.updateText()
+//      alert(JSON.stringify(this.selectedSubjects))
+//      this.s = this.updateText()
     },
 
     drp (obj) {
       // Delete from old
-      var index = obj.index // this.years[obj.oldYear].semesters[obj.oldSemester].indexOf(obj.subject)
+      var index = obj.index
       this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
 
       // Add to new
@@ -248,9 +190,9 @@ export default {
 
       this.$http.post(url, body, {headers: headers})
         .then(response => {
-//          alert(JSON.stringify(response))
+          // SUCCESS
         }, response => {
-//          alert(JSON.stringify(response))
+          // HANDLE ERROR
         })
 
       this.refreshData()
@@ -261,30 +203,17 @@ export default {
         'authorization': 'Basic dXNlcjphZG1pbjEyMw==',
         'accept': 'application/json'
       }
-//      alert('refreshing')
+
       this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
         .then(response => {
-//          alert(JSON.stringify(response.body.years))
           this.years = response.body.years
         }, response => {
-//          alert(response.status)
+          // HANDLE ERROR
         })
     }
   },
 
   created: function () {
-//    var headers = {
-//      'authorization': 'Basic dXNlcjphZG1pbjEyMw==',
-//      'accept': 'application/json'
-//    }
-//    alert('creating')
-//    this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
-//      .then(response => {
-//        alert(JSON.stringify(response.body.years))
-//        this.years = response.body.years
-//      }, response => {
-//        alert(response.status)
-//      })
     this.refreshData()
   }
 }
