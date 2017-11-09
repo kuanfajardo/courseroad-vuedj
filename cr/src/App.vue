@@ -204,19 +204,14 @@ export default {
     },
 
     addSubjectAPI (subject) {
-      var headers = {
-        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
-        'accept': 'application/json'
-      }
-
       var body = {
         'title': 'A Testt',
         'number': subject.number
       }
 
-      var url = 'http://127.0.0.1:8000/users/juanfajardo/years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
+      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
 
-      this.$http.post(url, body, {headers: headers})
+      this.$http.post(url, body)
         .then(response => {
           // SUCCESS
           this.refreshData()
@@ -226,14 +221,9 @@ export default {
     },
 
     deleteSubjectAPI (subject) {
-      var headers = {
-        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
-        'accept': 'application/json'
-      }
+      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
 
-      var url = 'http://127.0.0.1:8000/users/juanfajardo/years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
-
-      this.$http.delete(url, {headers: headers})
+      this.$http.delete(url)
         .then(response => {
           // SUCCESS
           this.refreshData()
@@ -244,14 +234,10 @@ export default {
     },
 
     refreshData () {
-      var headers = {
-        'authorization': 'Basic anVhbmZhamFyZG86YWRtaW4xMjM=',
-        'accept': 'application/json'
-      }
-
-      this.$http.get('http://127.0.0.1:8000/run/ABC/8/', {headers: headers})
+      var url = 'run/ABC/8/'
+      this.$http.get(url)
         .then(response => {
-          this.$http.get('http://127.0.0.1:8000/users/juanfajardo/', {headers: headers})
+          this.$http.get('')
             .then(response => {
               this.years = response.body.years
             }, response => {

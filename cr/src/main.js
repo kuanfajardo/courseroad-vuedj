@@ -11,6 +11,10 @@ import vueResource from 'vue-resource'
 Vue.use(vueResource)
 Vue.use(BootstrapVue)
 
+Vue.http.options.root = 'http://127.0.0.1:8000/users/juanfajardo/'
+Vue.http.headers.common['Authorization'] = 'Basic anVhbmZhamFyZG86YWRtaW4xMjM='
+Vue.http.headers.common['Accept'] = 'application/json'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

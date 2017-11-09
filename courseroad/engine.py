@@ -457,7 +457,7 @@ class Road:
             subject_obj = Subject.objects.get(subjectId=subject)
         except:
             print(subject)
-            raise Exception
+            return False
         requisites = json.loads(subject_obj.prerequisites)
 
         pre_reqs = requisites['pre']

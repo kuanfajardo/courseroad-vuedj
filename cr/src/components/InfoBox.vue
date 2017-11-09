@@ -3,7 +3,7 @@
     <b-container>
       <b-row id="row1">
         <b-col id="col1" cols="4">
-          <button type="button" id="deleteButton" v-on:click="deleteSubject" hidden>Delete</button>
+          <button type="button" id="deleteButton" v-on:click="deleteSubject">Delete</button>
         </b-col>
         <b-col cols="8" id="col2">
           <p align="right">8.01</p>
