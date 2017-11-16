@@ -19,25 +19,7 @@
           </year>
         </b-col>
       <b-col cols="3" class="coll-2">
-        <b-container class="sidebar">
-          <b-row>
-            <b-col cols="4" class="sidebar1">
-<!---->       <info-box v-on:deleteSubject="deleteSelectedSubjects"></info-box>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col cols="4" class="sidebar2">
-<!---->       <subject-box></subject-box>
-            </b-col>
-          </b-row>
-        </b-container>
-        <!--<div class="mt-3 classes">-->
-          <!--<h3 align="center">Classes</h3>-->
-          <!--<p>{{ s }}</p>-->
-          <!--<div>-->
-<!---->
-          <!--</div>-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <side-bar v-on:deleteSubjects="deleteSelectedSubjects"></side-bar>
       </b-col>
       </b-row>
     </b-container>
@@ -47,8 +29,7 @@
 <script>
 import NavBar from './components/NavBar'
 import Year from './components/Year'
-import InfoBox from './components/InfoBox'
-import SubjectBox from './components/SubjectBox'
+import SideBar from './components/SideBar'
 
 export default {
   name: 'app',
@@ -140,8 +121,7 @@ export default {
   components: {
     NavBar,
     Year,
-    InfoBox,
-    SubjectBox
+    SideBar
   },
 
   methods: {
@@ -297,44 +277,6 @@ export default {
 
 .coll-2 {
   height: 100%;
-}
-
-.sidebar {
-  position: fixed;
-  /*top:50%;*/
-  /*left:0;*/
-  /*bottom: 50%;*/
-  /*top: 0;*/
-  /*right: 2%;*/
-  height: 20rem;
-  /*background-color: #0c5460;*/
-}
-
-.sidebar1 {
-  border-left-width: thin;
-  border-left-color: #5e67b4;
-  border-left-style: solid;
-
-  border-bottom-width: thin;
-  border-bottom-color: #5e67b4;
-  border-bottom-style: solid;
-
-  padding-left: 0;
-  margin-top: 0;
-  padding-right: 2rem;
-  /*background-color: #ffc520;*/
-  min-height: 13rem;
-}
-
-.sidebar2 {
-  border-left-width: thin;
-  border-left-color: #5e67b4;
-  border-left-style: solid;
-
-  padding-left: 0;
-  padding-right: 2rem;
-  background-color: rgba(252, 225, 229, 0.12);
-  min-height: 34rem;
 }
 
 body {
