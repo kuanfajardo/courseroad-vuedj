@@ -8,7 +8,7 @@
     ></nav-bar>
     <b-container class="main h-100" fluid>
       <b-row>
-        <b-col cols="9" class="coll-1">
+        <b-col cols="9" class="coll-1" :class="{ loading: isLoading, updated: !isLoading}">
           <year v-for="year in years"
                 :key="year.year_id"
                 :id="year.year_id"
@@ -131,9 +131,9 @@ export default {
           id: 1
         }
       ],
-      s: 'None Selected',
       selectedSubjects: {},
-      years: []
+      years: [],
+      isLoading: false
     }
   },
 
@@ -146,8 +146,8 @@ export default {
 
   methods: {
     addSubject (obj) {
-      this.addSubjectAPI(obj)
-//      this.years[obj.year].semesters[obj.semester].subjects.push(obj)
+      this.addSubjectAPI(obj, true)
+      this.years[obj.year].semesters[obj.semester].subjects.push(obj)
     },
 
     toggle (obj) {
@@ -160,97 +160,108 @@ export default {
       }
     },
 
-    updateText () {
-      return 'SDFGH'
-//      if (this.selectedSubjectNames.length === 0) {
-//        return 'None Selected'
-//      } else if (this.selectedSubjectNames.length === 1) {
-//        return this.selectedSubjectNames[0]
-//      } else {
-//        return this.selectedSubjectNames.length + ' subjects selected.'
-//      }
-    },
-
     deleteSelectedSubjects () {
-      // FIX LATER
+      // TODO: FIX LATER
       for (var subjectNumber in this.selectedSubjects) {
         if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
-          this.deleteSubjectAPI(this.selectedSubjects[subjectNumber])
+          this.deleteSubjectAPI(this.selectedSubjects[subjectNumber], true)
         }
       }
+
+      // TODO: Add to closure call of deleteSubject call
+      this.selectedSubjects = {}
     },
 
     drp (obj) {
       if (obj.oldSemester === obj.newSemester && obj.oldYear === obj.newYear) {
         return
       }
+
+      // Opaque screen
+      this.isLoading = true
+
+      // Temporarily show results
+      var index = obj.index
+      this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
+      this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
+
+      // TODO: Make addSubjectAPI call only happen if delete successful
       // Delete from old
       this.deleteSubjectAPI({
         year: obj.oldYear,
         semester: obj.oldSemester,
         name: obj.obj.number
-      })
-
-//      var index = obj.index
-//      this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
+      }, false)
 
       // Add to new
       this.addSubjectAPI({
         year: obj.newYear,
         semester: obj.newSemester,
         number: obj.obj.number
-      })
-//      this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
+      }, true)
     },
 
-    addSubjectAPI (subject) {
+    // TODO: add closure parameter
+    addSubjectAPI (subject, clearLoading) {
       var body = {
         'title': 'A Testt',
         'number': subject.number
       }
 
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
+      this.isLoading = true
 
       this.$http.post(url, body)
         .then(response => {
           // SUCCESS
-          this.refreshData()
+          this.refreshData(clearLoading)
         }, response => {
           // HANDLE ERROR
+          this.isLoading = false
         })
     },
 
-    deleteSubjectAPI (subject) {
+    // TODO: add closure parameter
+    deleteSubjectAPI (subject, clearLoading) {
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
+      this.isLoading = true
 
       this.$http.delete(url)
         .then(response => {
           // SUCCESS
-          this.refreshData()
+          this.refreshData(clearLoading)
         }, response => {
           // HANDLE ERROR
           alert(JSON.stringify(response))
+          this.isLoading = false
         })
     },
 
-    refreshData () {
+    // TODO: add closure parameter
+    refreshData (clearLoading) {
       var url = 'run/ABC/8/'
+
       this.$http.get(url)
         .then(response => {
           this.$http.get('')
             .then(response => {
               this.years = response.body.years
+              if (clearLoading) {
+                this.isLoading = false
+              }
             }, response => {
               // HANDLE ERROR
+              this.isLoading = false
             })
         }, response => {
           // HANDLE ERROR
+          this.isLoading = false
         })
     }
   },
 
   created: function () {
-    this.refreshData()
+    this.refreshData(true)
   }
 }
 </script>
@@ -270,6 +281,14 @@ export default {
   text-align: left;
   margin-bottom: 4rem;
 
+}
+
+.updated {
+  opacity: 1;
+}
+
+.loading {
+  opacity: 0.5;
 }
 
 .coll-1 {
