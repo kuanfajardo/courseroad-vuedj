@@ -3,20 +3,27 @@
     <b-container>
       <b-row id="row1">
         <b-col id="col1" cols="4">
-          <button type="button" id="deleteButton" v-on:click="deleteSubject">Delete</button>
+          <button type="button" id="deleteButton" v-on:click="deleteSubject" hidden>Delete</button>
         </b-col>
         <b-col cols="8" id="col2">
-          <p align="right">8.01</p>
+          <p align="right">{{selected.number}}</p>
         </b-col>
       </b-row>
-      <b-row v-for="(property, index) in data" :key="index">
-        <b-col cols="4">
-          <p class="small-text"><b>{{ property.label }}</b></p>
-        </b-col>
-        <b-col cols="8">
-          <p class="small-text">{{ property.value }}</p>
+      <b-row>
+        <b-col cols="12">
+          <p class="subject-title"><b>{{ selected.title }}</b></p>
+          <p class="units"><i>{{ selected.units }}</i></p>
+          <p>{{ selected.description }}</p>
         </b-col>
       </b-row>
+      <!--<b-row v-for="(property, index) in data" :key="index">-->
+        <!--<b-col cols="4">-->
+          <!--<p class="small-text"><b>{{ property.label }}</b></p>-->
+        <!--</b-col>-->
+        <!--<b-col cols="8">-->
+          <!--<p class="small-text">{{ property.value }}</p>-->
+        <!--</b-col>-->
+      <!--</b-row>-->
     </b-container>
   </div>
 </template>
@@ -31,17 +38,7 @@
 
     data () {
       return {
-        data: [
-          {
-            label: 'Name', value: 'Elements of Sofware Construction'
-          },
-          {
-            label: 'Units', value: '5-0-7'
-          },
-          {
-            label: 'Description', value: 'Hello. Physics is HARD.'
-          }
-        ]
+
       }
     },
 
@@ -49,7 +46,11 @@
       deleteSubject () {
         this.$emit('deleteSubject')
       }
-    }
+    },
+
+    props: [
+      'selected'
+    ]
   }
 </script>
 
@@ -77,8 +78,9 @@
   }
 
   #col2 {
-        color: #aeaeae;
+    color: #aeaeae;
     /*background-color: #00b3ee;*/
+    font-size: 1.3rem;
   }
 
   #col3 {
@@ -98,5 +100,13 @@
     border-radius: 0.5rem;
     background-color: rgb(249, 247, 252);
     border-color: #e7f2fa;
+  }
+
+  .subject-title {
+    margin-bottom: 0;
+  }
+
+  .units {
+    margin-bottom: 0.3rem;
   }
 </style>

@@ -2,7 +2,7 @@
   <b-container class="sidebar">
     <b-row>
       <b-col cols="4" class="sidebar1">
-        <info-box v-on:deleteSubject="deleteSubjects"></info-box>
+        <info-box v-on:deleteSubject="deleteSubjects" :selected="selected"></info-box>
       </b-col>
     </b-row>
     <b-row>
@@ -35,7 +35,11 @@ export default {
     deleteSubjects () {
       this.$emit('deleteSubjects')
     }
-  }
+  },
+
+  props: [
+    'selected'
+  ]
 }
 </script>
 
@@ -79,4 +83,5 @@ export default {
   background-color: rgba(252, 225, 229, 0.12);
   min-height: 34rem;
 }
+
 </style>

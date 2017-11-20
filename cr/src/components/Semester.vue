@@ -67,7 +67,8 @@
           name: cls.number,
           semester: this.id,
           year: this.year,
-          index: index
+          index: index,
+          obj: cls
         })
       },
 

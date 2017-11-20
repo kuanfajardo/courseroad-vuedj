@@ -19,7 +19,7 @@
           </year>
         </b-col>
       <b-col cols="3" class="coll-2">
-        <side-bar v-on:deleteSubjects="deleteSelectedSubjects"></side-bar>
+        <side-bar v-on:deleteSubjects="deleteSelectedSubjects" :selected="selected"></side-bar>
       </b-col>
       </b-row>
     </b-container>
@@ -113,6 +113,7 @@ export default {
         }
       ],
       selectedSubjects: {},
+      selected: {},
       years: [],
       isLoading: false
     }
@@ -138,6 +139,8 @@ export default {
       } else {
         this.selectedSubjects[obj.name] = obj
       }
+
+      this.updateSelected()
     },
 
     deleteSelectedSubjects () {
@@ -160,7 +163,7 @@ export default {
       // Opaque screen
       this.isLoading = true
 
-      // Temporarily show results
+      // Temporarily "show" results
       var index = obj.index
       this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
       this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
@@ -237,6 +240,40 @@ export default {
           // HANDLE ERROR
           this.isLoading = false
         })
+    },
+
+    updateSelected () {
+      switch (Object.keys(this.selectedSubjects).length) {
+        case 0:
+          this.selected = {
+            number: '',
+            title: '-',
+            units: '',
+            description: 'No Classes Selected'
+          }
+          break
+
+        case 1:
+          var key = Object.keys(this.selectedSubjects)[0]
+          var subject = this.selectedSubjects[key]
+          alert(JSON.stringify(subject))
+          this.selected = {
+            number: subject.obj.number,
+            title: subject.obj.title,
+            units: '5-5-5',
+            description: 'A Description'
+          }
+          break
+
+        default:
+          this.selected = {
+            number: '',
+            title: '-',
+            units: '',
+            description: Object.keys(this.selectedSubjects).length + ' classes selected'
+          }
+          break
+      }
     }
   },
 
