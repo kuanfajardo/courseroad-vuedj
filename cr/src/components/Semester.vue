@@ -10,7 +10,7 @@
       <b-row v-for="(row, index) in row_classes" :key="index">
         <b-col v-for="(cls, index) in row" class="class-col" cols="2" :key="cls.number">
           <class-button
-              :text="cls.number"
+              :text="cls.subject.subjectId"
               @click.native="toggle($event.target, cls, index)"
               :hasConflict="cls.has_conflict"
               :semester="id"
@@ -64,7 +64,7 @@
         target.classList.toggle('selected')
         this.$emit('toggle', {
           target: target,
-          name: cls.number,
+          name: cls.subject.subjectId,
           semester: this.id,
           year: this.year,
           index: index,

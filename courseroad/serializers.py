@@ -5,13 +5,19 @@ from rest_framework import validators
 
 
 
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = "__all__"
+
 class UserSubjectSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True)
     semester = serializers.IntegerField(source='semester.semester_id', read_only=True)
+    subject = SubjectSerializer(many=False, read_only=True)
 
     class Meta:
         model = UserSubject
-        fields = ('semester', 'title', 'number', 'has_conflict', 'user')
+        fields = ('semester', 'has_conflict', 'user', 'subject')
 
 
 class SemesterSerializer(serializers.ModelSerializer):
@@ -39,11 +45,3 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'subjects', "years")
-
-
-
-class SubjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = "__all__"
-

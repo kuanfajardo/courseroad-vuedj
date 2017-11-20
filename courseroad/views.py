@@ -52,24 +52,57 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAdminUser,)
 
-class UserSubjectList(generics.ListCreateAPIView):
-    queryset = UserSubject.objects.all()
-    serializer_class = UserSubjectSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+# class UserSubjectList(generics.ListCreateAPIView):
+#     queryset = UserSubject.objects.all()
+#     serializer_class = UserSubjectSerializer
+#     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+#
+#     def perform_create(self, serializer):
+#         year = str(self.request.stream.path).split('/')[4]
+#         semester = str(self.request.stream.path).split('/')[6]
+#
+#         year_obj = Year.objects.get(year_id=year, user=self.request.user)
+#         semester_obj = Semester.objects.get(semester_id=semester, year=year_obj)
+#
+#         subject_id = self.request.data['number']
+#         subject_obj = Subject.objects.get(subjectId=subject_id)
+#         print(subject_obj)
+#
+#         serializer.save(semester=semester_obj, user=self.request.user, subject=subject_obj)
 
-    def perform_create(self, serializer):
-        year = str(self.request.stream.path).split('/')[4]
-        semester = str(self.request.stream.path).split('/')[6]
 
-        year_obj = Year.objects.get(year_id=year, user=self.request.user)
-        semester_obj = Semester.objects.get(semester_id=semester, year=year_obj)
+class UserSubjectListLong(APIView):
 
-        serializer.save(semester=semester_obj, user=self.request.user)
+    def get(self, request, username, year_id, semester_id):
+        year = Year.objects.get(user=request.user, year_id=year_id)
+        semester = Semester.objects.get(year=year, semester_id=semester_id)
+        subjects = UserSubject.objects.filter(user=request.user, semester=semester)
 
-class UserSubjectDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = UserSubject.objects.all()
-    serializer_class = UserSubjectSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
+        serializer = UserSubjectSerializer(subjects, many=True)
+        return Response(serializer.data)
+
+    def get_subject(self, subject_id):
+        return Subject.objects.get(subjectId=subject_id)
+
+    def post(self, request, username, year_id, semester_id):
+        year = Year.objects.get(user=request.user, year_id=year_id)
+        semester = Semester.objects.get(year=year, semester_id=semester_id)
+        subject=self.get_subject(request.data['number'])
+
+        print(request)
+        serializer = UserSubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(subject=subject, user=request.user, semester=semester)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+# class UserSubjectDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = UserSubject.objects.all()
+#     serializer_class = UserSubjectSerializer
+#     permission_classes = (IsOwnerOrReadOnly,)
 
 class YearList(generics.ListCreateAPIView):
     queryset = Year.objects.all()
@@ -93,23 +126,49 @@ class SemesterList(generics.ListCreateAPIView):
     serializer_class = SemesterSerializer
 
     def perform_create(self, serializer):
-        year = str(self.request.stream.path).split('/')[-3]
-        serializer.save(year=Year.objects.filter(year_id=year)[0])
-
-class SemesterDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Semester.objects.all()
-    serializer_class = SemesterSerializer
-    lookup_field = 'semester_id'
-    lookup_url_kwarg = 'pk'
-
+        year = str(self.request.stream.path).split('/')[4]
+        serializer.save(year=Year.objects.get(year_id=year))
 
     def get_queryset(self):
-        # print(str(self.))
         user = self.request.user
-        return Semester.objects.all()
+        year = str(self.request.stream.path).split('/')[4]
 
-    # def get(self, request, *args, **kwargs):
-    #     print(kwargs['year_id'])
+        year_obj = Year.objects.get(user=user, year_id=year)
+
+        return Semester.objects.filter(user=user, year=year_obj)
+
+
+class SemesterListLong(APIView):
+    def get(self, request, username, year_id):
+        year = Year.objects.get(user=request.user, year_id=year_id)
+        semesters = Semester.objects.filter(year=year)
+        serializer = SemesterSerializer(semesters, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, username, year_id):
+        year = Year.objects.get(user=request.user, year_id=year_id)
+
+        serializer = SemesterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(year=year)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class SemesterDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Semester.objects.all()
+#     serializer_class = SemesterSerializer
+#     lookup_field = 'semester_id'
+#     lookup_url_kwarg = 'pk'
+#
+#
+#     def get_queryset(self):
+#         # print(str(self.))
+#         user = self.request.user
+#         return Semester.objects.all()
+#
+#     # def get(self, request, *args, **kwargs):
+#     #     print(kwargs['year_id'])
 
 
 class SemesterDetailLong(APIView):
@@ -155,7 +214,8 @@ class UserSubjectDetailLong(APIView):
             print(year)
             semester = Semester.objects.get(year=year, semester_id=semester_id)
             print(semester)
-            return UserSubject.objects.get(semester=semester, number=subject_id)
+            subject = Subject.objects.get(subjectId=subject_id)
+            return UserSubject.objects.get(semester=semester, subject=subject)
         except:
             raise Http404
 
@@ -306,7 +366,7 @@ class Rules(APIView):
                 subj = []
 
                 for subject in UserSubject.objects.filter(semester=semester):
-                    subj.append(subject.number)
+                    subj.append(subject.subject.subjectId)
 
                 temp[semester.semester_id] = subj
 
@@ -322,9 +382,10 @@ class Rules(APIView):
         print(sat_dict)
 
         for subject in sat_dict:
-            subject_obj = UserSubject.objects.get(user=request.user, number=subject)
-            subject_obj.has_conflict = not sat_dict[subject]
-            subject_obj.save()
+            subject_obj = Subject.objects.get(subjectId=subject)
+            user_subject_obj = UserSubject.objects.get(user=request.user, subject=subject_obj)
+            user_subject_obj.has_conflict = not sat_dict[subject]
+            user_subject_obj.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

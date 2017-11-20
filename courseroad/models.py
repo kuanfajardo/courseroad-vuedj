@@ -3,17 +3,6 @@ from rest_framework import validators
 
 # Create your models here.
 
-class UserSubject(models.Model):
-    # semester = models.IntegerField(default=0)
-    semester = models.ForeignKey('courseroad.Semester', related_name='subjects', on_delete=models.CASCADE)
-    number = models.CharField(max_length=10)
-    title = models.CharField(max_length=200, blank=False)
-    has_conflict = models.BooleanField(default=False)
-    user = models.ForeignKey('auth.User', related_name='subjects', on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ('number',)
-
 
 class Subject(models.Model):
     termCode = models.CharField(max_length=7)
@@ -27,6 +16,16 @@ class Subject(models.Model):
     description = models.TextField()
     instructors = models.TextField()
 
+class UserSubject(models.Model):
+    # semester = models.IntegerField(default=0)
+    semester = models.ForeignKey('courseroad.Semester', related_name='subjects', on_delete=models.CASCADE)
+    # number = models.CharField(max_length=10)
+    # title = models.CharField(max_length=200, blank=False)
+    has_conflict = models.BooleanField(default=False)
+    user = models.ForeignKey('auth.User', related_name='subjects', on_delete=models.CASCADE)
+
+    subject = models.ForeignKey('courseroad.Subject', default=None)
+
 
 class Semester(models.Model):
     year = models.ForeignKey('courseroad.Year', related_name='semesters', on_delete=models.CASCADE)
@@ -36,9 +35,15 @@ class Semester(models.Model):
     type = models.CharField(max_length=10)
     # user = models.ForeignKey('auth.User')
 
+    class Meta:
+        ordering = ('semester_id',)
+
 
 class Year(models.Model):
     # semesters = models.ForeignKey('courseroad.Semester', related_name='year', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', related_name='years', on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
     year_id = models.IntegerField()
+
+    class Meta:
+        ordering = ('year_id',)

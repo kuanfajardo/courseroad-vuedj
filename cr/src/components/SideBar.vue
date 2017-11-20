@@ -71,6 +71,7 @@ export default {
   padding-right: 2rem;
   /*background-color: #ffc520;*/
   min-height: 13rem;
+  max-height: 13rem;
 }
 
 .sidebar2 {

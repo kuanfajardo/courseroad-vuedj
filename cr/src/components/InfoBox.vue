@@ -3,7 +3,7 @@
     <b-container>
       <b-row id="row1">
         <b-col id="col1" cols="4">
-          <button type="button" id="deleteButton" v-on:click="deleteSubject" hidden>Delete</button>
+          <!--<button type="button" id="deleteButton" v-on:click="deleteSubject">Delete</button>-->
         </b-col>
         <b-col cols="8" id="col2">
           <p align="right">{{selected.number}}</p>
@@ -13,7 +13,13 @@
         <b-col cols="12">
           <p class="subject-title"><b>{{ selected.title }}</b></p>
           <p class="units"><i>{{ selected.units }}</i></p>
-          <p>{{ selected.description }}</p>
+          <!--<p>{{ selected.description }}</p>-->
+          <!--<button type="button" class="cr-button" :href="catalogLink">Subject Catalog</button>-->
+          <!--<button type="button" class="cr-button" v-on:click="deleteSubject">Course Evaluations</button>-->
+          <!--<button type="button" class="cr-button" v-on:click="deleteSubject">Delete</button>-->
+          <b-button class="cr-button" size="sm" @click="openCatalogLink" :hidden="selected.hideLinks">Subject Catalog</b-button>
+          <b-button class="cr-button" size="sm" @click="openEvalLink" :hidden="selected.hideLinks">Course Evaluations</b-button>
+          <b-button class="cr-button" size="sm" @click="deleteSubject" :hidden="selected.hideDelete">Delete</b-button>
         </b-col>
       </b-row>
       <!--<b-row v-for="(property, index) in data" :key="index">-->
@@ -45,12 +51,36 @@
     methods: {
       deleteSubject () {
         this.$emit('deleteSubject')
+      },
+
+      openCatalogLink () {
+        window.open(
+          this.catalogLink,
+          '_blank' // <- This is what makes it open in a new window.
+        )
+      },
+
+      openEvalLink () {
+        window.open(
+          this.evalLink,
+          '_blank' // <- This is what makes it open in a new window.
+        )
       }
     },
 
     props: [
       'selected'
-    ]
+    ],
+
+    computed: {
+      catalogLink: function () {
+        return 'http://student.mit.edu/catalog/search.cgi?search=' + this.selected.number + '&style=verbatim'
+      },
+
+      evalLink: function () {
+        return 'https://edu-apps.mit.edu/ose-rpt/subjectEvaluationSearch.htm?termId=&departmentId=&subjectCode=' + this.selected.number + '&instructorName=&search=Search'
+      }
+    }
   }
 </script>
 
@@ -93,13 +123,18 @@
     padding: 0;
   }
 
-  #deleteButton {
-    margin-bottom: 3rem;
+  .cr-button {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     font-size: 0.8rem;
     max-height: 70%;
     border-radius: 0.5rem;
-    background-color: rgb(249, 247, 252);
-    border-color: #e7f2fa;
+    background-color:#758acf;
+    border-color: #364ca7;
+    border-style: solid;
+    color: #ffffff;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
   }
 
   .subject-title {

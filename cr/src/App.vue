@@ -153,6 +153,7 @@ export default {
 
       // TODO: Add to closure call of deleteSubject call
       this.selectedSubjects = {}
+      this.updateSelected()
     },
 
     drp (obj) {
@@ -173,21 +174,20 @@ export default {
       this.deleteSubjectAPI({
         year: obj.oldYear,
         semester: obj.oldSemester,
-        name: obj.obj.number
+        name: obj.obj.subject.subjectId
       }, false)
 
       // Add to new
       this.addSubjectAPI({
         year: obj.newYear,
         semester: obj.newSemester,
-        number: obj.obj.number
+        number: obj.obj.subject.subjectId
       }, true)
     },
 
     // TODO: add closure parameter
     addSubjectAPI (subject, clearLoading) {
       var body = {
-        'title': 'A Testt',
         'number': subject.number
       }
 
@@ -246,31 +246,37 @@ export default {
       switch (Object.keys(this.selectedSubjects).length) {
         case 0:
           this.selected = {
-            number: '',
-            title: '-',
+            number: 'info',
+            title: 'No Subjects Selected',
             units: '',
-            description: 'No Classes Selected'
+            description: '',
+            hideLinks: true,
+            hideDelete: true
           }
           break
 
         case 1:
           var key = Object.keys(this.selectedSubjects)[0]
           var subject = this.selectedSubjects[key]
-          alert(JSON.stringify(subject))
+
           this.selected = {
-            number: subject.obj.number,
-            title: subject.obj.title,
-            units: '5-5-5',
-            description: 'A Description'
+            number: subject.obj.subject.subjectId,
+            title: subject.obj.subject.title,
+            units: subject.obj.subject.units,
+            description: subject.obj.subject.description,
+            hideLinks: false,
+            hideDelete: false
           }
           break
 
         default:
           this.selected = {
-            number: '',
-            title: '-',
-            units: '',
-            description: Object.keys(this.selectedSubjects).length + ' classes selected'
+            number: 'info',
+            title: Object.keys(this.selectedSubjects).length + ' Subjects Selected',
+            units: '89 units',
+            description: '',
+            hideLinks: true,
+            hideDelete: false
           }
           break
       }
@@ -279,6 +285,7 @@ export default {
 
   created: function () {
     this.refreshData(true)
+    this.updateSelected()
   }
 }
 </script>
