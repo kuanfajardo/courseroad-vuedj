@@ -129,7 +129,14 @@ export default {
 
   methods: {
     addSubject (obj) {
-      this.addSubjectAPI(obj, true)
+      this.isLoading = true
+
+      this.addSubjectAPI(obj, (_, response) => {
+        this.refreshData((_, response) => {
+          this.isLoading = false
+        })
+      })
+
       this.years[obj.year].semesters[obj.semester].subjects.push(obj)
     },
 
@@ -146,16 +153,37 @@ export default {
     },
 
     deleteSelectedSubjects () {
-      // TODO: FIX LATER
+      var len = Object.keys(this.selectedSubjects).length
+      var i = 1
+      this.isLoading = true
+
       for (var subjectNumber in this.selectedSubjects) {
         if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
-          this.deleteSubjectAPI(this.selectedSubjects[subjectNumber], true)
-        }
-      }
+          this.selectedSubjects[subjectNumber].target.classList.toggle('selected')
+          if (i === len) { // i.e. this is the last call
+            this.deleteSubjectAPI(this.selectedSubjects[subjectNumber], (error, response) => {
+              if (error === null) {
+                this.selectedSubjects = {}
+                this.updateSelected()
+              } else {
+                for (var subjectNumber in this.selectedSubjects) {
+                  if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
+                    this.selectedSubjects[subjectNumber].target.classList.toggle('selected')
+                  }
+                }
+              }
 
-      // TODO: Add to closure call of deleteSubject call
-      this.selectedSubjects = {}
-      this.updateSelected()
+              this.refreshData((_, response) => {
+                this.isLoading = false
+              })
+            })
+          } else {
+            this.deleteSubjectAPI(this.selectedSubjects[subjectNumber], (_, response) => {})
+          }
+        }
+
+        i++
+      }
     },
 
     drp (obj) {
@@ -171,24 +199,30 @@ export default {
       this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
       this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
 
-      // TODO: Make addSubjectAPI call only happen if delete successful
       // Delete from old
       this.deleteSubjectAPI({
         year: obj.oldYear,
         semester: obj.oldSemester,
         name: obj.obj.subject.subjectId
-      }, false)
-
-      // Add to new
-      this.addSubjectAPI({
-        year: obj.newYear,
-        semester: obj.newSemester,
-        number: obj.obj.subject.subjectId
-      }, true)
+      }, (error, response) => {
+        if (error === null) {
+          // Add to new
+          this.addSubjectAPI({
+            year: obj.newYear,
+            semester: obj.newSemester,
+            number: obj.obj.subject.subjectId
+          }, (_, response) => {
+            this.isLoading = false
+            this.refreshData((_, response) => {})
+          })
+        } else {
+          this.isLoading = false
+          this.refreshData((_, response) => {})
+        }
+      })
     },
 
-    // TODO: add closure parameter
-    addSubjectAPI (subject, clearLoading) {
+    addSubjectAPI (subject, callback) {
       this.navBarText = ''
 
       var body = {
@@ -196,13 +230,12 @@ export default {
       }
 
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
-      this.isLoading = true
 
       this.$http.post(url, body)
         .then(response => {
           // SUCCESS
-          this.refreshData(clearLoading)
           this.navBarText = ''
+          callback(null, response)
         }, response => {
           // HANDLE ERROR
           this.isLoading = false
@@ -216,31 +249,28 @@ export default {
               this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
           }
 
-          this.refreshData()
+          callback(errorType, response)
         })
     },
 
-    // TODO: add closure parameter
-    deleteSubjectAPI (subject, clearLoading) {
+    deleteSubjectAPI (subject, callback) {
       this.navBarText = ''
 
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
-      this.isLoading = true
 
       this.$http.delete(url)
         .then(response => {
           // SUCCESS
-          this.refreshData(clearLoading)
+          callback(null, response)
         }, response => {
           // HANDLE ERROR
-          this.refreshData()
+          var errorType = response.body.error_type
           this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
-          this.isLoading = false
+          callback(errorType, response)
         })
     },
 
-    // TODO: add closure parameter
-    refreshData (clearLoading) {
+    refreshData (callback) {
       var url = 'run/ABC/8/'
 
       this.$http.get(url)
@@ -248,18 +278,20 @@ export default {
           this.$http.get('')
             .then(response => {
               this.years = response.body.years
-              if (clearLoading) {
-                this.isLoading = false
-              }
+              callback(null, response)
             }, response => {
               // HANDLE ERROR
+              var errorType = response.body.error_type
               this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
-              this.isLoading = false
+
+              callback(errorType, response)
             })
         }, response => {
           // HANDLE ERROR
+          var errorType = response.body.error_type
           this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
-          this.isLoading = false
+
+          callback(errorType, response)
         })
     },
 
@@ -305,7 +337,7 @@ export default {
   },
 
   created: function () {
-    this.refreshData(true)
+    this.refreshData((_, response) => {})
     this.updateSelected()
   }
 }
