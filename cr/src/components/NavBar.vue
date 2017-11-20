@@ -7,6 +7,7 @@
 
       <!-- Right aligned nav items -->
       <b-nav is-nav-bar class="ml-auto">
+        <span id="navText">{{ text }}</span>
 
         <b-nav-form class="padded-form">
           <b-form-input v-model="subject" size="sm" class="mr-sm-2" type="text" placeholder="18.01"/>
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+  // TODO: ADD "EDIT", "DELETE", "COURSE EVALS", "CATALOG" buttons for toggle
   export default {
     name: 'nav-bar',
 
@@ -43,7 +45,7 @@
       }
     },
 
-    props: ['semesters', 'buckets', 'courses', 'selectedCourse'],
+    props: ['semesters', 'buckets', 'courses', 'selectedCourse', 'text'],
 
     methods: {
       updateSemester (semester) {
@@ -116,5 +118,12 @@
 
   .coursedrop {
 
+  }
+
+  #navText {
+    color: #ffffff;
+    align-content: center;
+    margin-right: 2.5rem;
+    margin-top: 0.5rem;
   }
 </style>

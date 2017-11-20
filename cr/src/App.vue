@@ -5,6 +5,7 @@
              :semesters="semesters"
              :courses="courses"
              :selectedCourse="'6-3'"
+             :text="navBarText"
     ></nav-bar>
     <b-container class="main h-100" fluid>
       <b-row>
@@ -115,7 +116,8 @@ export default {
       selectedSubjects: {},
       selected: {},
       years: [],
-      isLoading: false
+      isLoading: false,
+      navBarText: ''
     }
   },
 
@@ -187,6 +189,8 @@ export default {
 
     // TODO: add closure parameter
     addSubjectAPI (subject, clearLoading) {
+      this.navBarText = ''
+
       var body = {
         'number': subject.number
       }
@@ -198,14 +202,28 @@ export default {
         .then(response => {
           // SUCCESS
           this.refreshData(clearLoading)
+          this.navBarText = ''
         }, response => {
           // HANDLE ERROR
           this.isLoading = false
+          var errorType = response.body.error_type
+
+          switch (errorType) {
+            case 0:
+              this.navBarText = 'Subject does not exist. \uD83D\uDE15'
+              break
+            default:
+              this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
+          }
+
+          this.refreshData()
         })
     },
 
     // TODO: add closure parameter
     deleteSubjectAPI (subject, clearLoading) {
+      this.navBarText = ''
+
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
       this.isLoading = true
 
@@ -215,7 +233,8 @@ export default {
           this.refreshData(clearLoading)
         }, response => {
           // HANDLE ERROR
-          alert(JSON.stringify(response))
+          this.refreshData()
+          this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
           this.isLoading = false
         })
     },
@@ -234,10 +253,12 @@ export default {
               }
             }, response => {
               // HANDLE ERROR
+              this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
               this.isLoading = false
             })
         }, response => {
           // HANDLE ERROR
+          this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
           this.isLoading = false
         })
     },
@@ -273,7 +294,7 @@ export default {
           this.selected = {
             number: 'info',
             title: Object.keys(this.selectedSubjects).length + ' Subjects Selected',
-            units: '89 units',
+            units: ' Tread carefully',
             description: '',
             hideLinks: true,
             hideDelete: false

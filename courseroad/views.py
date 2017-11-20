@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import permissions
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 
 from courseroad.permissions import IsOwnerOrReadOnly
@@ -82,12 +83,18 @@ class UserSubjectListLong(APIView):
         return Response(serializer.data)
 
     def get_subject(self, subject_id):
-        return Subject.objects.get(subjectId=subject_id)
+        try:
+            return Subject.objects.get(subjectId=subject_id)
+        except ObjectDoesNotExist:
+            return None
 
     def post(self, request, username, year_id, semester_id):
         year = Year.objects.get(user=request.user, year_id=year_id)
         semester = Semester.objects.get(year=year, semester_id=semester_id)
-        subject=self.get_subject(request.data['number'])
+        subject = self.get_subject(request.data['number'])
+
+        if subject is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error_type": 0})
 
         print(request)
         serializer = UserSubjectSerializer(data=request.data)
