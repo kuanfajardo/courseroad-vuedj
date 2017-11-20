@@ -212,12 +212,14 @@ export default {
             semester: obj.newSemester,
             number: obj.obj.subject.subjectId
           }, (_, response) => {
-            this.isLoading = false
-            this.refreshData((_, response) => {})
+            this.refreshData((_, response) => {
+              this.isLoading = false
+            })
           })
         } else {
-          this.isLoading = false
-          this.refreshData((_, response) => {})
+          this.refreshData((_, response) => {
+            this.isLoading = false
+          })
         }
       })
     },
