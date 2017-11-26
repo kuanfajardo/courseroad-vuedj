@@ -83,6 +83,8 @@ export default {
   padding-right: 2rem;
   background-color: rgba(252, 225, 229, 0.12);
   min-height: 34rem;
+  max-height: 34rem;
+  overflow: hidden;
 }
 
 </style>

@@ -5,9 +5,9 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseroad/engine.py" afterPath="$PROJECT_DIR$/courseroad/engine.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/App.vue" afterPath="$PROJECT_DIR$/cr/src/App.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/components/ClassButton.vue" afterPath="$PROJECT_DIR$/cr/src/components/ClassButton.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/components/Semester.vue" afterPath="$PROJECT_DIR$/cr/src/components/Semester.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/components/ReqCell.vue" afterPath="$PROJECT_DIR$/cr/src/components/ReqCell.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/components/SideBar.vue" afterPath="$PROJECT_DIR$/cr/src/components/SideBar.vue" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cr/src/components/SubjectBox.vue" afterPath="$PROJECT_DIR$/cr/src/components/SubjectBox.vue" />
     </list>
     <ignored path="courseroad_web.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -48,11 +48,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Semester.vue" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Semester.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cr/src/components/Semester.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.65912116">
-              <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state vertical-scroll-proportion="-1.7647059">
+              <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -71,7 +71,7 @@
       <file leaf-file-name="ClassButton.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cr/src/components/ClassButton.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.875">
+            <state vertical-scroll-proportion="-13.125">
               <caret line="21" column="28" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="28" />
               <folding />
             </state>
@@ -91,8 +91,8 @@
       <file leaf-file-name="SideBar.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cr/src/components/SideBar.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-43.041668">
-              <caret line="78" column="28" selection-start-line="78" selection-start-column="22" selection-end-line="78" selection-end-column="28" />
+            <state vertical-scroll-proportion="-26.791666">
+              <caret line="86" column="19" selection-start-line="86" selection-start-column="19" selection-end-line="86" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -101,18 +101,18 @@
       <file leaf-file-name="SubjectBox.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cr/src/components/SubjectBox.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.625">
-              <caret line="22" column="13" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
+            <state vertical-scroll-proportion="-14.916667">
+              <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReqCell.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ReqCell.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cr/src/components/ReqCell.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-31.875">
-              <caret line="51" column="40" selection-start-line="51" selection-start-column="40" selection-end-line="51" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.74935734">
+              <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -141,8 +141,8 @@
       <file leaf-file-name="NavBar.vue" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cr/src/components/NavBar.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.1960783">
-              <caret line="105" column="29" selection-start-line="105" selection-start-column="23" selection-end-line="105" selection-end-column="29" />
+            <state vertical-scroll-proportion="-0.29411766">
+              <caret line="1" column="46" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -179,18 +179,18 @@
         <option value="$PROJECT_DIR$/courseroad/models.py" />
         <option value="$PROJECT_DIR$/courseroad/migrations/0002_subjects.py" />
         <option value="$PROJECT_DIR$/courseroad/serializers.py" />
-        <option value="$PROJECT_DIR$/cr/src/components/SideBar.vue" />
         <option value="$PROJECT_DIR$/courseroad_web/urls.py" />
         <option value="$PROJECT_DIR$/courseroad/views.py" />
         <option value="$PROJECT_DIR$/courseroad/engine.py" />
         <option value="$PROJECT_DIR$/cr/src/components/InfoBox.vue" />
         <option value="$PROJECT_DIR$/cr/src/components/NavBar.vue" />
-        <option value="$PROJECT_DIR$/cr/src/components/ReqCell.vue" />
-        <option value="$PROJECT_DIR$/cr/src/components/SubjectBox.vue" />
         <option value="$PROJECT_DIR$/cr/src/components/ClassButton.vue" />
         <option value="$PROJECT_DIR$/cr/src/components/ClassThumb.vue" />
         <option value="$PROJECT_DIR$/cr/src/App.vue" />
         <option value="$PROJECT_DIR$/cr/src/components/Semester.vue" />
+        <option value="$PROJECT_DIR$/cr/src/components/SideBar.vue" />
+        <option value="$PROJECT_DIR$/cr/src/components/SubjectBox.vue" />
+        <option value="$PROJECT_DIR$/cr/src/components/ReqCell.vue" />
       </list>
     </option>
   </component>
@@ -1077,58 +1077,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/NavBar.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.1960783">
-          <caret line="105" column="29" selection-start-line="105" selection-start-column="23" selection-end-line="105" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cr/src/components/InfoBox.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.75">
           <caret line="22" column="16" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/SideBar.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-43.041668">
-          <caret line="78" column="28" selection-start-line="78" selection-start-column="22" selection-end-line="78" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/ReqCell.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-31.875">
-          <caret line="51" column="40" selection-start-line="51" selection-start-column="40" selection-end-line="51" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/SubjectBox.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.625">
-          <caret line="22" column="13" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/Year.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.375">
-          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cr/src/components/ClassButton.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.875">
-          <caret line="21" column="28" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="28" />
           <folding />
         </state>
       </provider>
@@ -1151,8 +1103,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cr/src/components/Semester.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.65912116">
-          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+        <state vertical-scroll-proportion="-1.7647059">
+          <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/Year.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.375">
+          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/ClassButton.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.125">
+          <caret line="21" column="28" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/SideBar.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.791666">
+          <caret line="86" column="19" selection-start-line="86" selection-start-column="19" selection-end-line="86" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/NavBar.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.29411766">
+          <caret line="1" column="46" selection-start-line="1" selection-start-column="40" selection-end-line="1" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/SubjectBox.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.916667">
+          <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cr/src/components/ReqCell.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.74935734">
+          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
           <folding />
         </state>
       </provider>

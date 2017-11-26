@@ -1,8 +1,8 @@
 <template>
   <b-container class="req-cell py-3" fluid>
-    <b-row v-for="row in rows" align-v="center" align-h="between">
+    <b-row v-for="(row, index) in rows" align-v="center" align-h="between" :key="index">
       <b-col cols="8">
-        <b-form-checkbox size="md" :style="{ 'margin-left': row.indentLevel + 'rem' }" v-model="row.checked" value="y" disabled>
+        <b-form-checkbox size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
           {{ row.text }}
         </b-form-checkbox>
       </b-col>
@@ -45,7 +45,9 @@
 
     components: {
       ClassThumb
-    }
+    },
+
+    props: [ 'rows' ]
   }
 </script>
 
