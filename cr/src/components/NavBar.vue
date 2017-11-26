@@ -11,7 +11,7 @@
 
         <b-nav-form class="padded-form">
           <b-form-input v-model="subject" size="sm" class="mr-sm-2" type="text" placeholder="18.01"/>
-          <b-button size="sm" class="my-2 my-sm-0" type="text" v-on:click="addSubject">Add</b-button>
+          <b-button id="addButton" size="sm" class="my-2 my-sm-0" type="text" v-on:click="addSubject">Add</b-button>
         </b-nav-form>
 
         <b-nav-item-dropdown :text=bucketText right class="mr-sm-2 bucketdrop">
@@ -21,7 +21,6 @@
           <b-dropdown-item v-for="semester in semesters" v-on:click=updateSemester(semester) href="#" :key="semester.id">{{ semester.name }}</b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <!--<b-nav-item href="#">Login</b-nav-item>-->
         <b-nav-item-dropdown :text=courseText right class="mr-sm-2 coursedrop">
           <b-dropdown-item v-for="course in courses" v-on:click=updateCourse(course) href="#" :key="course">{{ course }}</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -107,7 +106,7 @@
     background-color: #7488d2;
   }
 
-  .my-2 {
+  #addButton {
      background-color: #5e67b4;
   }
 
