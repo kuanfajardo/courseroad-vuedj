@@ -54,7 +54,7 @@
           var endIndex = Math.min(this.classes.length, (i + 1) * 6)
           arr.push(this.classes.slice(startIndex, endIndex))
         }
-//        alert(JSON.stringify(arr))
+
         return arr
       }
     },

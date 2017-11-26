@@ -215,14 +215,14 @@ export default {
       this.deleteSubjectAPI({
         year: obj.oldYear,
         semester: obj.oldSemester,
-        name: obj.obj.subject.subjectId
+        name: obj.number
       }, (error, response) => {
         if (error === null) {
           // Add to new
           this.addSubjectAPI({
             year: obj.newYear,
             semester: obj.newSemester,
-            number: obj.obj.subject.subjectId
+            number: obj.number
           }, (_, response) => {
             this.refreshData((_, response) => {
               this.isLoading = false

@@ -22,7 +22,8 @@
           index: this.index,
           oldSemester: this.semester,
           oldYear: this.year,
-          obj: this.obj
+          obj: this.obj,
+          number: this.text
         })
 
         event.dataTransfer.setData('text', obj)
