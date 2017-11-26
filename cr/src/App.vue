@@ -191,6 +191,18 @@ export default {
         return
       }
 
+      if (obj.oldSemester === -1 && obj.oldYear === -1) {
+        var newObj = {
+          year: obj.newYear,
+          semester: obj.newSemester,
+          number: obj.number
+        }
+
+        this.addSubject(newObj)
+
+        return
+      }
+
       // Opaque screen
       this.isLoading = true
 

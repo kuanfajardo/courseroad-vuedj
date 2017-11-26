@@ -17,8 +17,15 @@
     props: ['text'],
 
     methods: {
-      dragStart () {
-        //
+      dragStart (event) {
+        var obj = JSON.stringify({
+          oldSemester: -1,
+          oldYear: -1,
+          number: this.text
+        })
+
+        event.dataTransfer.setData('text', obj)
+        event.dataTransfer.effectAllowed = 'move'
       }
     }
   }

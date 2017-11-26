@@ -1,7 +1,7 @@
 <template>
   <div class="semester"
        :hidden="hidden"
-       v-on:dragover="dragOver"
+       v-on:dragover.prevent="dragOver"
        v-on:dragleave="dragLeave"
        v-on:drop="drop"
       :class="{ dropzone : dropzone }">
@@ -73,7 +73,6 @@
       },
 
       dragOver (event) {
-        event.preventDefault()
         event.dataTransfer.dropEffect = 'move'
         this.dropzone = true
       },
@@ -95,6 +94,7 @@
           index: obj.index,
           newYear: this.year,
           newSemester: this.id,
+          number: obj.number,
           obj: obj.obj
         })
       }
