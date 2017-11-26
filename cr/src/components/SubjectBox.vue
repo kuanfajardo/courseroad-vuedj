@@ -7,10 +7,16 @@
       <b-dropdown-header id="header1">Custom</b-dropdown-header>
       <b-dropdown-item v-for="bucket in custom" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
     </b-dropdown>
+
+    <b-container class="req-container">
+      <req-cell></req-cell>
+    </b-container>
   </div>
 </template>
 
 <script>
+  import ReqCell from './ReqCell'
+
   export default {
     name: 'subject-box',
 
@@ -100,6 +106,10 @@
 
     created: function () {
       window.addEventListener('keyup', this.keyPressed)
+    },
+
+    components: {
+      ReqCell
     }
   }
 </script>
@@ -140,6 +150,15 @@
     border-radius: 0;
     border-color: #5e67b4;
     border-bottom-width: thin;
+  }
+
+  .req-container {
+    /*width: 100%;*/
+    margin-top: 1rem;
+  }
+
+  .req-cell.top {
+    border-top-style: none;
   }
 
 </style>
