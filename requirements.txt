@@ -4,3 +4,4 @@ django-cors-headers
 django-rest-framework
 dj_database_url
 python-decouple
+psycopg2
