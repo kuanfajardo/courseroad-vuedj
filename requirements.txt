@@ -2,3 +2,5 @@ Django==1.11.5
 requests
 django-cors-headers
 django-rest-framework
+dj_database_url
+python-decouple
