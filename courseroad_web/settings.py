@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY') # '41xgs(gkbz@v@fb=d4i9*=e3*!t$&486$kj&oliv&_o
 # DEBUG = True
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -178,3 +178,8 @@ CORS_ALLOW_METHODS = (
     'POST',
     'PUT',
 )
+
+
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+X_FRAME_OPTIONS = 'DENY'
