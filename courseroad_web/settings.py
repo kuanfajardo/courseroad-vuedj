@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '41xgs(gkbz@v@fb=d4i9*=e3*!t$&486$kj&oliv&_o_q(3^_1'#config('SECRET_KEY') # '41xgs(gkbz@v@fb=d4i9*=e3*!t$&486$kj&oliv&_o_q(3^_1'
+SECRET_KEY = config('SECRET_KEY') # '41xgs(gkbz@v@fb=d4i9*=e3*!t$&486$kj&oliv&_o_q(3^_1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -84,18 +84,18 @@ WSGI_APPLICATION = 'courseroad_web.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    # 'default' : dj_database_url.config(
-    #     default=config('DATABASE_URL')
-    # )
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-
-    'subjects_data': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'subjects_db.sqlite3'),
-    }
+    'default' : dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
+    #
+    # 'subjects_data': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'subjects_db.sqlite3'),
+    # }
 }
 
 
