@@ -70,8 +70,8 @@ export default {
   margin-top: 0;
   padding-right: 2rem;
   /*background-color: #ffc520;*/
-  min-height: 13rem;
-  max-height: 13rem;
+  min-height: 12rem;
+  max-height: 12rem;
 }
 
 .sidebar2 {
@@ -82,8 +82,8 @@ export default {
   padding-left: 0;
   padding-right: 2rem;
   background-color: rgba(252, 225, 229, 0.12);
-  min-height: 34rem;
-  max-height: 34rem;
+  min-height: 35rem;
+  max-height: 35rem;
   overflow: hidden;
 }
 

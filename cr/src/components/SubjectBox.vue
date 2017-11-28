@@ -9,7 +9,7 @@
     </b-dropdown>
 
     <b-container class="req-container">
-      <req-cell v-for="(cell, index) in cells" :rows="cell" :key="index" :class="{ mid: index !== 0 }"></req-cell>
+      <req-cell v-for="(cell, index) in cells" :cell="cell" :key="index" :class="{ mid: index !== 0 }"></req-cell>
     </b-container>
   </div>
 </template>
@@ -48,118 +48,124 @@
           }
         ],
         cells: [
-          [
-            {
-              text: '1 of:',
-              indentLevel: 0,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: 'Path One',
-              indentLevel: 1,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: '1 of:',
-              indentLevel: 2,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: '6.01',
-              indentLevel: 3,
-              checked: 'y',
-              buttonText: '6.01'
-            },
-            {
-              text: '6.S08',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.S08'
-            },
-            {
-              text: '6.S080',
-              indentLevel: 2,
-              checked: 'n',
-              buttonText: '6.S080'
-            },
-            {
-              text: 'Path Two',
-              indentLevel: 1,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: '1 of:',
-              indentLevel: 2,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: '6.01',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.01'
-            },
-            {
-              text: '6.S08',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.S08'
-            },
-            {
-              text: '6.02',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.02'
-            },
-            {
-              text: '6.03',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.03'
-            },
-            {
-              text: '1 of:',
-              indentLevel: 2,
-              checked: 'n',
-              buttonText: ''
-            },
-            {
-              text: '6.0001',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.0001'
-            },
-            {
-              text: '6.0002',
-              indentLevel: 3,
-              checked: 'n',
-              buttonText: '6.0002'
-            }
-          ],
-          [
-            {
-              text: '6.004',
-              indentLevel: 0,
-              checked: 'n',
-              buttonText: '6.004'
-            },
-            {
-              text: '6.006',
-              indentLevel: 0,
-              checked: 'y',
-              buttonText: '6.006'
-            },
-            {
-              text: '6.009',
-              indentLevel: 0,
-              checked: 'y',
-              buttonText: '6.009'
-            }
-          ]
+          {
+            name: 'Intro/Programming',
+            rows: [
+              {
+                text: '1 of:',
+                indentLevel: 0,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: 'Path One',
+                indentLevel: 1,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: '1 of:',
+                indentLevel: 2,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: '6.01',
+                indentLevel: 3,
+                checked: 'y',
+                buttonText: '6.01'
+              },
+              {
+                text: '6.S08',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.S08'
+              },
+              {
+                text: '6.S080',
+                indentLevel: 2,
+                checked: 'n',
+                buttonText: '6.S080'
+              },
+              {
+                text: 'Path Two',
+                indentLevel: 1,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: '1 of:',
+                indentLevel: 2,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: '6.01',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.01'
+              },
+              {
+                text: '6.S08',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.S08'
+              },
+              {
+                text: '6.02',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.02'
+              },
+              {
+                text: '6.03',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.03'
+              },
+              {
+                text: '1 of:',
+                indentLevel: 2,
+                checked: 'n',
+                buttonText: ''
+              },
+              {
+                text: '6.0001',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.0001'
+              },
+              {
+                text: '6.0002',
+                indentLevel: 3,
+                checked: 'n',
+                buttonText: '6.0002'
+              }
+            ]
+          },
+          {
+            name: 'Foundation',
+            rows: [
+              {
+                text: '6.004',
+                indentLevel: 0,
+                checked: 'n',
+                buttonText: '6.004'
+              },
+              {
+                text: '6.006',
+                indentLevel: 0,
+                checked: 'y',
+                buttonText: '6.006'
+              },
+              {
+                text: '6.009',
+                indentLevel: 0,
+                checked: 'y',
+                buttonText: '6.009'
+              }
+            ]
+          }
         ]
       }
     },
@@ -278,4 +284,9 @@
     border-top-style: none;
   }
 
+  .btn {
+    background-color: #5e67b4;
+    border-style: none;
+  }
+  
 </style>
