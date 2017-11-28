@@ -1,34 +1,27 @@
 <template>
-  <b-container v-if="!collapse" class="req-cell pb-1" fluid>
-    <b-row align-h="between" align-v="center">
+  <b-container class="req-cell" fluid>
+     <b-row align-h="between" align-v="center">
       <b-col cols="8" class="pt-3">
         <p>{{ cell.name }}</p>
       </b-col>
       <b-col cols="2">
         <button type="button" class="collapse-button py-1" v-on:click="collapsed()">{{ buttonText }}</button>
-        <!--<b-button size="sm" class="my-0 collapse-button" :pressed.sync="collapse">-->
-          <!--{{ buttonText }}-->
-        <!--</b-button>-->
       </b-col>
     </b-row>
-    <b-row v-for="(row, index) in cell.rows" align-v="center" align-h="between" :key="index">
-      <b-col cols="8">
-        <b-form-checkbox size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
-          {{ row.text }}
-        </b-form-checkbox>
-      </b-col>
-      <b-col cols="3">
-        <!--<class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>-->
-      </b-col>
-    </b-row>
-  </b-container>
-  <b-container v-else class="req-cell collapsed">
-    <b-row align-h="between" align-v="center">
-      <b-col cols="8" class="pt-3">
-        <p>{{ cell.name }}</p>
-      </b-col>
-      <b-col cols="2">
-        <button type="button" class="collapse-button py-1" v-on:click="collapsed()">{{ buttonText }}</button>
+    <b-row :class="[ collapse ? 'pb-0' : 'pb-3' ]">
+      <b-col cols="12">
+        <b-container v-if="!collapse" class="px-0">
+          <b-row v-for="(row, index) in cell.rows" align-v="center" align-h="between" :key="index">
+            <b-col cols="8">
+              <b-form-checkbox size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
+               {{ row.text }}
+              </b-form-checkbox>
+            </b-col>
+            <b-col cols="3">
+              <class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>
+            </b-col>
+          </b-row>
+        </b-container>
       </b-col>
     </b-row>
   </b-container>

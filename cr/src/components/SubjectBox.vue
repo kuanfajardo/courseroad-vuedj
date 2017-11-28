@@ -288,5 +288,5 @@
     background-color: #5e67b4;
     border-style: none;
   }
-  
+
 </style>
