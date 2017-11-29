@@ -270,7 +270,7 @@ export default {
     deleteSubjectAPI (subject, callback) {
       this.navBarText = ''
 
-      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name
+      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name + '/'
 
       this.$http.delete(url)
         .then(response => {
