@@ -18,7 +18,7 @@
               </b-form-checkbox>
             </b-col>
             <b-col cols="3">
-              <class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>
+              <!--<class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>-->
             </b-col>
           </b-row>
         </b-container>
