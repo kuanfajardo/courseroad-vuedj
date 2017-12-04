@@ -140,13 +140,14 @@ export default {
       this.years[obj.year].semesters[obj.semester].subjects.push(obj)
     },
 
+    // Toggle Selection
     toggle (obj) {
-      var alreadySelected = this.selectedSubjects.hasOwnProperty(obj.name)
+      var alreadySelected = this.selectedSubjects.hasOwnProperty(obj.subjectID)
 
       if (alreadySelected) {
-        delete this.selectedSubjects[obj.name]
+        delete this.selectedSubjects[obj.subjectID]
       } else {
-        this.selectedSubjects[obj.name] = obj
+        this.selectedSubjects[obj.subjectID] = obj
       }
 
       this.updateSelected()
@@ -160,12 +161,14 @@ export default {
       for (var subjectNumber in this.selectedSubjects) {
         if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
           this.selectedSubjects[subjectNumber].target.classList.toggle('selected')
+
           if (i === len) { // i.e. this is the last call
             this.deleteSubjectAPI(this.selectedSubjects[subjectNumber], (error, response) => {
               if (error === null) {
                 this.selectedSubjects = {}
                 this.updateSelected()
               } else {
+                // Failure - retoggle classes to 'selected'
                 for (var subjectNumber in this.selectedSubjects) {
                   if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
                     this.selectedSubjects[subjectNumber].target.classList.toggle('selected')
@@ -187,15 +190,17 @@ export default {
     },
 
     drp (obj) {
+      // Dragged into same semester
       if (obj.oldSemester === obj.newSemester && obj.oldYear === obj.newYear) {
         return
       }
 
+      // Dragged over from sidebar
       if (obj.oldSemester === -1 && obj.oldYear === -1) {
         var newObj = {
           year: obj.newYear,
           semester: obj.newSemester,
-          number: obj.number
+          subjectID: obj.subjectID
         }
 
         this.addSubject(newObj)
@@ -211,18 +216,20 @@ export default {
       this.years[obj.oldYear].semesters[obj.oldSemester].subjects.splice(index, 1)
       this.years[obj.newYear].semesters[obj.newSemester].subjects.push(obj.obj)
 
+      // Unselected everything
+
       // Delete from old
       this.deleteSubjectAPI({
         year: obj.oldYear,
         semester: obj.oldSemester,
-        name: obj.number
+        subjectID: obj.subjectID
       }, (error, response) => {
         if (error === null) {
           // Add to new
           this.addSubjectAPI({
             year: obj.newYear,
             semester: obj.newSemester,
-            number: obj.number
+            subjectID: obj.subjectID
           }, (_, response) => {
             this.refreshData((_, response) => {
               this.isLoading = false
@@ -240,7 +247,7 @@ export default {
       this.navBarText = ''
 
       var body = {
-        'number': subject.number
+        'subjectID': subject.subjectID
       }
 
       var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/'
@@ -270,7 +277,7 @@ export default {
     deleteSubjectAPI (subject, callback) {
       this.navBarText = ''
 
-      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.name + '/'
+      var url = 'years/' + subject.year + '/semesters/' + subject.semester + '/subjects/' + subject.subjectID + '/'
 
       this.$http.delete(url)
         .then(response => {

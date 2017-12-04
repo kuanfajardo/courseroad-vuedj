@@ -65,7 +65,7 @@
         this.$emit('addSubject', {
           year: this.selectedYear,
           semester: this.selectedSemester,
-          number: this.subject.toUpperCase()
+          subjectID: this.subject.toUpperCase()
         })
 
         this.subject = ''

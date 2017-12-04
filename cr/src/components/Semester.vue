@@ -64,7 +64,7 @@
         target.classList.toggle('selected')
         this.$emit('toggle', {
           target: target,
-          name: cls.subject.subjectId,
+          subjectID: cls.subject.subjectId,
           semester: this.id,
           year: this.year,
           index: index,
@@ -94,7 +94,7 @@
           index: obj.index,
           newYear: this.year,
           newSemester: this.id,
-          number: obj.number,
+          subjectID: obj.subjectID,
           obj: obj.obj
         })
       }

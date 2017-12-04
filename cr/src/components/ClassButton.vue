@@ -23,7 +23,7 @@
           oldSemester: this.semester,
           oldYear: this.year,
           obj: this.obj,
-          number: this.text
+          subjectID: this.text
         })
 
         event.dataTransfer.setData('text', obj)

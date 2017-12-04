@@ -91,7 +91,7 @@ class UserSubjectListLong(APIView):
     def post(self, request, username, year_id, semester_id):
         year = Year.objects.get(user=request.user, year_id=year_id)
         semester = Semester.objects.get(year=year, semester_id=semester_id)
-        subject = self.get_subject(request.data['number'])
+        subject = self.get_subject(request.data['subjectID'])
 
         if subject is None:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error_type": 0})
