@@ -394,4 +394,8 @@ body {
   background-color: #fafafa;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 </style>
