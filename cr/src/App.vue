@@ -233,6 +233,15 @@ export default {
           }, (_, response) => {
             this.refreshData((_, response) => {
               this.isLoading = false
+
+              // Un-select any subjects that were moved
+              for (var subjectNumber in this.selectedSubjects) {
+                if (this.selectedSubjects.hasOwnProperty(subjectNumber)) {
+                  if (subjectNumber === obj.subjectID) {
+                    this.toggle(this.selectedSubjects[subjectNumber])
+                  }
+                }
+              }
             })
           })
         } else {
