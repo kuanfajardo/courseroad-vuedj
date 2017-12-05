@@ -1,23 +1,10 @@
 import json
-from courseroad.fancy_print import *
-from courseroad.models import Subject
-import requests
+# from courseroad.models import Subject
 
-satt = {}
 
-names = {}
 path_keys = {}
-path_sat = {}
-
-full_sat = {}
-full_path_sat = {}
-
 real_sat = {}
 real_path_sat = {}
-
-requ_path_sat = {}
-
-pre_req_master = {}
 
 
 def tagged(subject: str, tag: str):
@@ -28,105 +15,62 @@ def tagged(subject: str, tag: str):
 
     return subject in obj[tag]
 
-
-def check(obj, classes):
-    ct = obj["count"]
+def check(req_obj, subjects):
+    ct = req_obj["count"]
     required = ct == -1
 
     if required:
-        for subject in obj["reqs"]:
-            sat_val = subject in classes
-            update_sat(subject,
-                       sat_val,
-                       obj["path"] if "path" in obj else None)
-
-            update_full_sat(subject,
-                            [subject] if sat_val else [],
-                            obj["path"] if "path" in obj else None)
+        for subject in req_obj["reqs"]:
+            sat_val = subject in subjects
 
             update_real_sat(subject,
                             (sat_val, [subject] if sat_val else []),
-                            obj["path"] if "path" in obj else None)
+                            req_obj["path"] if "path" in req_obj else None)
 
         return
 
-    tag_req = "tag" in obj
+    tag_req = "tag" in req_obj
 
     co = 0
     sat = []
-    for cl in classes:
-        if tag_req and tagged(cl, obj["tag"]) or not tag_req and cl in obj["reqs"]:
+    for cl in subjects:
+        if tag_req and tagged(cl, req_obj["tag"]) or not tag_req and cl in req_obj["reqs"]:
             co += 1
             sat += [cl]
 
         if co == ct:
             break
 
-    update_sat(obj["idd"], co >= ct, obj["path"] if "path" in obj else None)
-    update_full_sat(obj["idd"], sat, obj["path"] if "path" in obj else None)
-    update_real_sat(obj["idd"], (co >= ct, sat), obj["path"] if "path" in obj else None)
+    update_real_sat(req_obj["idd"], (co >= ct, sat), req_obj["path"] if "path" in req_obj else None)
 
+def check_requirements(req_obj, subjects, path=None):
+    typ = req_obj['type']
 
-def check_req(obj, classes, path=None):
-    typ = obj['type']
-
-    if "name" in obj:
-        names[obj["idd"]] = obj["name"]
-
-    if is_leaf(obj):
+    if is_leaf(req_obj):
         if path is not None:
-            obj.update({'path': path})
+            req_obj.update({'path': path})
 
-            if path[0] not in path_sat:
-                path_sat[path[0]] = {}
-                full_path_sat[path[0]] = {}
+            if path[0] not in real_path_sat:
                 real_path_sat[path[0]] = {}
 
             if path[0] not in path_keys:
                 path_keys[path[0]] = {}
 
             if path[1] in path_keys[path[0]]:
-                path_keys[path[0]][path[1]].add(obj["idd"])
+                path_keys[path[0]][path[1]].add(req_obj["idd"])
             else:
-                path_keys[path[0]][path[1]] = {obj["idd"]}
+                path_keys[path[0]][path[1]] = {req_obj["idd"]}
 
-        check(obj, classes)
+        check(req_obj, subjects)
         return
 
     if typ == 'path':
-        for i, path in enumerate(obj['paths']):
-            check_req(path, classes, (obj["idd"], path["pid"]))
+        for i, path in enumerate(req_obj['paths']):
+            check_requirements(path, subjects, (req_obj["idd"], path["pid"]))
         return
 
-    for req in obj['reqs']:
-        check_req(req, classes, path)
-
-
-def update_sat(key, val, path=None):
-    if path is None:
-        satt.update({key: val})
-        return
-
-    satt.update({key: val})
-
-    if path[1] in path_sat[path[0]]:
-        path_sat[path[0]][path[1]].update({key: val})
-    else:
-        path_sat[path[0]][path[1]] = {key: val}
-
-
-def update_full_sat(key, val, path=None):
-    if path is None:
-        full_sat.update({key: val})
-        return
-
-    full_sat.update({key: val})
-
-    if path[1] in full_path_sat[path[0]]:
-        full_path_sat[path[0]][path[1]][key] = val
-    else:
-        full_path_sat[path[0]][path[1]] = {key: val}
-
+    for req in req_obj['reqs']:
+        check_requirements(req, subjects, path)
 
 def update_real_sat(key, val, path=None):
     if path is None:
@@ -140,36 +84,40 @@ def update_real_sat(key, val, path=None):
     else:
         real_path_sat[path[0]][path[1]] = {key: val}
 
-
 def is_leaf(obj):
     return obj["type"] == "leaf"
 
+def is_path(obj):
+    return obj["type"] == "path"
 
-def eval_path_sat(path_id):
-    max_path = -1
+def is_sub_req(obj):
+    return obj["type"] == "req"
+
+# TODO: fix bad algorithm - if completed branch has <= # of items, wont get notices
+def evaluate_path_sat(path_id):
+    best_path = -1
     max_ct = -1
 
-    for path, reqs in path_sat[path_id].items():
+    for path, reqs in real_path_sat[path_id].items():
         ct = 0
         for req, val in reqs.items():
-            if val is True:
+            req_sat = val[0]
+            if req_sat:
                 ct += 1
 
         if ct > max_ct:
-            max_path = path
+            best_path = path
             max_ct = ct
 
-    return max_path, max_ct
+    return best_path, max_ct
 
+def evaluate_paths():
+    all_paths = {}
+    for path_id in path_keys:
+        best_path, max_ct = evaluate_path_sat(path_id)
+        all_paths[path_id] = (best_path, max_ct)
 
-def eval_all_path_sat():
-    all_path_sat = {}
-    for path in path_keys:
-        all_path_sat[path] = eval_path_sat(path)
-        requ_path_sat[path] = all_path_sat[path][0]
-
-    return all_path_sat
-
+    return all_paths
 
 def complete_sat(obj):
     typ = obj["type"]
@@ -179,21 +127,18 @@ def complete_sat(obj):
             return
 
         req_sat = True
-        sat = []
+        sat_subjects = []
         for subject in obj["reqs"]:
-            req_sat &= satt[subject]
-            sat += full_sat[subject]
+            temp_req_sat, temp_sat_subjects = real_sat[subject]
 
-        satt[obj["idd"]] = req_sat
-        full_sat[obj["idd"]] = sat
-        real_sat[obj["idd"]] = (req_sat, sat)
+            req_sat &= temp_req_sat
+            sat_subjects += temp_sat_subjects
+
+        real_sat[obj["idd"]] = (req_sat, sat_subjects)
 
         return
 
     if typ == "path":
-        # selected_path = requ_path_sat[obj["idd"]]
-        # complete_sat(obj["paths"][selected_path])
-
         for path in obj["paths"]:
             complete_sat(path)
 
@@ -201,18 +146,18 @@ def complete_sat(obj):
 
     if typ == "req":
         req_sat = True
-        sat = []
+        sat_subjects = []
         for req in obj["reqs"]:
             complete_sat(req)
-            req_sat &= satt[req["idd"]]
-            sat += full_sat[req["idd"]]
 
-        satt[obj["idd"]] = req_sat
-        full_sat[obj["idd"]] = sat
-        real_sat[obj["idd"]] = (req_sat, sat)
+            temp_req_sat, temp_sat_subjects = real_sat[req["idd"]]
 
+            req_sat &= temp_req_sat
+            sat_subjects += temp_sat_subjects
 
-def ts(obj, sat, level=0):
+        real_sat[obj["idd"]] = (req_sat, sat_subjects)
+
+def prepare_output(obj, sat, level=0):
     typ = obj["type"]
     name = obj["name"] if "name" in obj else None
     reqs = obj["reqs"] if "reqs" in obj else None
@@ -220,11 +165,11 @@ def ts(obj, sat, level=0):
 
     str_arr = []
     if typ == "req":
-        name_str = name  # assumes each req has a name
-        str_arr.append((name_str, level, sat[idd]))
+        name_str = name  # assumes each "req" type has a name
+        str_arr.append((name_str, level, sat[idd][0]))
 
         for req in reqs:
-            str_arr += ts(req, sat, level + 1)
+            str_arr += prepare_output(req, sat, level + 1)
 
         return str_arr
 
@@ -234,12 +179,12 @@ def ts(obj, sat, level=0):
         tag_req = "tag" in obj
 
         if name:
-            str_arr.append((name, level, sat[idd]))  # remove Y/N from name level
+            str_arr.append((name, level, sat[idd][0]))  # remove Y/N from name level
             level += 1
 
         if tag_req:
             str_arr.append(("* " + str(ct) + " class tagged as \'" + obj["tag"] + "\'", level, True
-                            if sat[idd]
+                            if sat[idd][0]
                             else False))
 
             return str_arr
@@ -247,7 +192,7 @@ def ts(obj, sat, level=0):
         if required:
             for subject in reqs:
                 subj_str = subject
-                str_arr.append((subj_str, level, True if sat[subject] else False))
+                str_arr.append((subj_str, level, True if sat[subject][0] else False))
 
             return str_arr
 
@@ -259,161 +204,298 @@ def ts(obj, sat, level=0):
                 if i != len(obj["reqs"]) - 1:
                     tri_str += ", "
 
-            str_arr.append((tri_str, level, sat[idd]))
+            str_arr.append((tri_str, level, sat[idd][0]))
 
             return str_arr
 
     if typ == "path":
         name_str = name  # assumes each path has a name
-        str_arr.append((name_str, level, sat[idd]))
+        str_arr.append((name_str, level, sat[idd][0]))
 
         level += 1
-        str_arr.append(("1 of:", level, sat[idd]))
+        str_arr.append(("1 of:", level, sat[idd][0]))
 
         for path in obj["paths"]:
             name_str = "PATH " + str(path["pid"])
             str_arr.append((name_str, level + 1, ""))
 
             for req in path["reqs"]:
-                str_arr += ts(req, sat, level + 2)
+                str_arr += prepare_output(req, sat, level + 2)
 
         return str_arr
 
 
-def cs(str_arr: list):
-    print("")
-    for str_line in str_arr:
-        level = str_line[1]
 
-        if level == 0:
-            print_header("+---------------------------------------------------+")
-            print_header("{0:^53}".format(str_line[0]))
-            print_header("+---------------------------------------------------+")
-            continue
+class RRequirement:
+    def __init__(self, req_file):
+        if (type(req_file) is str):
+            req_file = open(req_file)
 
-        level -= 1
+        self.req_obj = json.load(req_file)
+        self.path_keys = self.get_path_keys(self.req_obj)
 
-        if level == 0:
-            print("\n-------------------------------------\n")
-            out_str = "{0:" + str(level * 3 + 1) + "} {1}"
-            print_message(out_str.format("", "** " + str_line[0]) + " **")
-            print("")
+        self.type = self.req_obj["type"]
+        self.req_id = self.req_obj["idd"]
+        self.count = self.req_obj["count"]
+
+        self.name = self.req_obj["name"] if "name" in self.req_obj else ""
+
+        if self.type == "path":
+            self.paths = self.req_obj["paths"]
+
+        if self.type == "req":
+            self.requirements = self.req_obj["reqs"]
+
+        if self.type == "leaf":
+            if "reqs" in self.req_obj:
+                self.requirements = self.req_obj["reqs"]
+
+            if "tag" in self.req_obj:
+                self.tag = self.req_obj["tag"]
+
+        if "pid" in self.req_obj:
+            self.path_id = self.req_obj["pid"]
+
+
+
+
+    @classmethod
+    def get_path_keys(self, req_obj, path=None, path_keys=None):
+        """
+        Recursively extract all path keys
+        :param req_obj:
+        :param path:
+        :param path_keys:
+        :return:
+        """
+
+        if path_keys is None:
+            path_keys = {}
+
+        if is_leaf(req_obj):
+            if path is not None:
+                path_req_id, path_id = path
+
+                if path_req_id not in path_keys:
+                    path_keys[path_req_id] = {}
+
+                if path_id in path_keys[path_req_id]:
+                    path_keys[path_req_id][path_id].add(req_obj["idd"])
+                else:
+                    path_keys[path_req_id][path_id] = {req_obj["idd"]}
+
+        elif is_path(req_obj):
+            req_id = req_obj["idd"]
+
+            for path_obj in req_obj['paths']:
+                path_id = path_obj["pid"]
+                self.get_path_keys(path_obj, (req_id, path_id), path_keys)
+
         else:
-            out_str = "{0:" + str(level * 3) + "} {1}"
+            for req in req_obj['reqs']:
+                self.get_path_keys(req, path, path_keys)
 
-            req_satisfied = str_line[2]
-            if req_satisfied:
-                print_success(out_str.format("", str_line[0]))
-            else:
-                print_failure(out_str.format("", str_line[0]))
+        return path_keys
 
+    def check_requirements(self, subjects):
+        """
 
-def run(classes: set, req_file, show_pre_reqs=False):
-    obj = json.load(req_file)
-    print(obj)
-    check_req(obj, classes)
-
-    all_path_sat = eval_all_path_sat()
-
-    for p, sol in all_path_sat.items():
-        path_id, _ = sol
-
-        satt.update(path_sat[p][path_id])
-        full_sat.update(full_path_sat[p][path_id])
-        real_sat.update(real_path_sat[p][path_id])
-
-    complete_sat(obj)
-    x = ts(obj, satt)
-    cs(x)
-
-    if show_pre_reqs:
-        check_all_pre_reqs(classes)
+        :param subjects:
+        :return:
+        """
 
 
-def check_all_pre_reqs(classes: set):
-    all_broken_reqs = {}
-    for subject in classes:
-        broken_pre_reqs = check_pre_req(subject, classes)
+class BaseRequirement:
+    def __init__(self, req_obj):
+        """
+        Constructor.
 
-        if not broken_pre_reqs:  # all pre reqs satisfied
-            continue
+        :param req_obj:
+        :return:
+        """
+        self.type = req_obj["type"]
+        self.req_id = req_obj["idd"]
+        self.count = req_obj["count"]
+        self.required = self.count == -1
+        self.name = req_obj["name"] if "name" in req_obj else ""
 
-        all_broken_reqs[subject] = broken_pre_reqs
-
-    if all_broken_reqs:
-        print(bold("\nUnsatisfied Pre-Requisites:\n"))
-        for subject, reqs in all_broken_reqs.items():
-            print(bold(subject) + ":  " + failure(pre_req_string(reqs)))
-    else:
-        print(bold("\nAll Pre-Requisites Satisfied!\n"))
+        if "pid" in req_obj:
+            self.path_id = req_obj["pid"]
 
 
-def pre_req_string(p: list):
-    req_str = ""
+    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+        """
+        Determine if requirement is satisfied. TO BE OVERRIDDEN
 
-    for req in p:
-        if len(req) == 1:
-            r_s = req[0]
+        :param subjects: set of subjectIDs (strings)
+        :return: True if requirement is satisfied with the given subjects
+        :rtype:tuple
+        """
+
+        pass
+
+
+
+class ReqFactory:
+    @classmethod
+    def create(cls, req_obj: object):
+        if type(req_obj) is str:
+            file_obj = open(req_obj)
+            req_obj = json.load(file_obj)
+
+        typ = req_obj["type"]
+
+        if typ == "leaf":
+            if "reqs" in req_obj:
+                return LeafRequirement(req_obj)
+            if "tag" in req_obj:
+                return TagRequirement(req_obj)
+
+        if typ == "path":
+            return Path(req_obj)
+
+        if typ == "req":
+            return Requirement(req_obj)
+
+
+class Requirement(BaseRequirement): # type == "req"
+    def __init__(self, req_obj):
+        super().__init__(req_obj)
+
+        self.raw_requirements = req_obj["reqs"]
+        self.requirements = []
+
+        for req in req_obj["reqs"]:
+            self.requirements.append(ReqFactory.create(req))
+
+    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+        if sat_dict is None:
+            sat_dict = {}
+
+        ct = 0
+        for req in self.requirements:
+            req_sat, sat_dict = req.is_satisfied(subjects, sat_dict)
+            if req_sat:
+                ct += 1
+
+            if ct == self.count:
+                break
+
+        if self.required:
+            sat = ct == len(self.requirements)
+            if self.req_id == 1:
+                print(sat, ct, len(self.requirements))
         else:
-            r_s = ", ".join(req[:-1])
-            r_s += " or " + req[-1]
+            sat = ct == self.count
 
-        req_str += r_s + "; "
-
-    return req_str
+        sat_dict[self.req_id] = sat
+        return (sat, sat_dict)
 
 
-def check_pre_req(subject: str, classes: set):
-    if subject in pre_req_master:
-        return pre_req_master[subject]
+class Path(BaseRequirement): # type == "path"
+    def __init__(self, req_obj):
+        super().__init__(req_obj)
 
-    base_url = "https://mit-public.cloudhub.io/coursecatalog/v2/terms/2017FA/subjects/"
-    base_url += subject
+        self.raw_paths = req_obj["paths"]
+        self.paths = []
 
-    headers = {
-        "client_id": "897b5d76f69a469cb8138a8300964211",
-        "client_secret": "5fee674bAd0A4b228585Bb1870c4E062"
-    }
+        for path in req_obj["paths"]:
+            self.paths.append(ReqFactory.create(path))
 
-    try:
-        req_json = requests.get(base_url, headers=headers).json()["item"]
-    except:
-        return []
+    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+        if sat_dict is None:
+            sat_dict = {}
 
-    if req_json["prerequisites"] == "None":
-        return True
+        ct = 0
+        for path in self.paths:
+            path_sat, sat_dict = path.is_satisfied(subjects, sat_dict)
+            if path_sat:
+                ct += 1
 
-    all_pre_reqs = parse_pre_reqs(req_json["prerequisites"])
-    broken = []
-    for pre_req in all_pre_reqs:
-        sat = False
-        for p in pre_req:
-            if p in classes:
-                sat = True
-                continue
+        if self.required:
+            sat = ct == len(self.paths)
+        else:
+            sat = ct == self.count
 
-        if not sat:
-            broken.append(pre_req)
-
-    pre_req_master[subject] = broken
-    return broken
+        sat_dict[self.req_id] = sat
+        return (sat, sat_dict)
 
 
-def parse_pre_reqs(pre_req_str):
-    pre_reqs = []
-    for p in pre_req_str.split("; "):
-        pre_req = p.split(", ")
+class Leaf(BaseRequirement): # type == "leaf"
+    def __init__(self, req_obj):
+        super().__init__(req_obj)
 
-        or_clause = pre_req.pop().split("or ")
 
-        if or_clause[0] == "":
-            or_clause.remove("")
+class TagRequirement(Leaf): # type == "leaf", has TAG
+    def __init__(self, req_obj):
+        super().__init__(req_obj)
+        self.tag = req_obj["tag"]
 
-        pre_req += [x.strip() for x in or_clause]
+    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+        if sat_dict is None:
+            sat_dict = []
 
-        pre_reqs.append(pre_req)
+        ct = 0
+        for subject in subjects:
+            if True:
+                ct += 1
 
-    return pre_reqs
+            if ct == self.count:
+                break
+
+        sat = ct == self.count
+        sat_dict[self.req_id] = sat
+        return (sat, sat_dict)
+
+
+class LeafRequirement(Leaf): # type == "leaf", has REQS
+    def __init__(self, req_obj):
+        super().__init__(req_obj)
+        self.requirements = req_obj["reqs"]
+
+    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+        if sat_dict is None:
+            sat_dict = []
+
+        ct = 0
+        for req in self.requirements:
+            if req in subjects:
+                ct += 1
+
+            sat_dict[req] = req in subjects
+
+        if self.required:
+            sat = ct == len(self.requirements)
+        else:
+            sat = ct == self.count
+
+        sat_dict[self.req_id] = sat
+        return (sat, sat_dict)
+
+
+
+def run(subjects: set, req_file):
+    requirements = json.load(req_file)
+
+    # Check naive (non-path) requirements
+    check_requirements(requirements, subjects)
+
+    # Based on above results, choose "best" option for each path;
+    #   "Best" means the option that has most number of requirements satisfied
+    path_sat_dict = evaluate_paths()
+
+    for path_id, sol in path_sat_dict.items():
+        best_path, _ = sol
+        real_sat.update(real_path_sat[path_id][best_path])
+
+    complete_sat(requirements)
+    x = prepare_output(requirements, real_sat)
+
+
+req_file = "./static/courseroad/6-3.req"
+# r = Requirement(req_file)
+r = ReqFactory.create(req_file)
+print(r.is_satisfied({"6.009", "6.004", "6.006", "6.01", "6.0001"}))
 
 
 
@@ -452,11 +534,10 @@ class Road:
 
 
     def sat_req(self, subject, already_taken, currently_taking):
-        # TODO: HANDLE BAD SUBJECTS
         try:
             subject_obj = Subject.objects.get(subjectId=subject)
         except:
-            print(subject)
+            print('SAT REQ ERROR: ' + subject)
             return False
         requisites = json.loads(subject_obj.prerequisites)
 
