@@ -148,8 +148,7 @@ class ListRequirement(BaseRequirement): # type == "req"
 
         if self.required:
             sat = ct == len(self.requirements)
-            if self.req_id == 1:
-                print(sat, ct, len(self.requirements))
+
         else:
             sat = ct == self.count
 
@@ -233,30 +232,6 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
         return (sat, sat_dict)
 
 
-
-def run(subjects: set, req_file):
-    requirements = json.load(req_file)
-
-    # Check naive (non-path) requirements
-    check_requirements(requirements, subjects)
-
-    # Based on above results, choose "best" option for each path;
-    #   "Best" means the option that has most number of requirements satisfied
-    path_sat_dict = evaluate_paths()
-
-    for path_id, sol in path_sat_dict.items():
-        best_path, _ = sol
-        real_sat.update(real_path_sat[path_id][best_path])
-
-    complete_sat(requirements)
-    x = prepare_output(requirements, real_sat)
-
-
-req_file = "./static/courseroad/6-3.req"
-r = RequirementFactory.create(req_file)
-print(r.is_satisfied({"6.009", "6.004", "6.006", "6.01", "6.0001"}))
-
-
 class Road:
     def __init__(self, subjects={}, course=None):
         self.subject_dict = subjects
@@ -289,7 +264,6 @@ class Road:
                 already_taken += semester
 
         return req_sat
-
 
     def sat_req(self, subject, already_taken, currently_taking):
         try:
