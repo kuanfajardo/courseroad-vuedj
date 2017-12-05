@@ -381,7 +381,7 @@ class Rules(APIView):
 
         return subjects
 
-    def get(self, request, a, b, format=None):
+    def get(self, request, format=None):
         subjects = self.get_subjects(request.user)
 
         r = Road(subjects)

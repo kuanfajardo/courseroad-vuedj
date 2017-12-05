@@ -301,7 +301,7 @@ export default {
     },
 
     refreshData (callback) {
-      var url = 'run/ABC/8/'
+      var url = 'run/'
 
       this.$http.get(url)
         .then(response => {
