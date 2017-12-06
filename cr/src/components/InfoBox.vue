@@ -23,7 +23,7 @@
   export default {
     name: 'info-box',
 
-    components: [],
+    components: {},
 
     data () {
       return {
