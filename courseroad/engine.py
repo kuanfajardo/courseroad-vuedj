@@ -461,11 +461,10 @@ class Road:
 def test():
     import pickle
 
-    pickle_file = "./static/courseroad/6-3.p"
+    pickle_file = "courseroad/static/courseroad/6-3.p"
     r = pickle.load(open(pickle_file, 'rb'))
     subj = {'6.01', '6.0001', '6.004', '6.006', '6.009', '6.031'}
 
     sat = Checker(r).check(subj)
     print(sat)
 
-test()
