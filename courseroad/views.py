@@ -13,9 +13,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 
 from courseroad.permissions import IsOwnerOrReadOnly
-from courseroad.engine import Road
+from courseroad.engine import Road, RequirementFactory
 
-from courseroad.engine import run
+# from courseroad.engine import run
 
 # class UserViewSet(viewsets.ModelViewSet):
 #     """
@@ -363,8 +363,8 @@ class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class Rules(APIView):
 
-    def get_subjects(self, user):
-        subjects = {}
+    def get_road(self, user):
+        road = {}
 
         for year in Year.objects.filter(user=user):
             temp = {}
@@ -377,16 +377,24 @@ class Rules(APIView):
 
                 temp[semester.semester_id] = subj
 
-            subjects[year.year_id] = temp
+            road[year.year_id] = temp
 
-        return subjects
+        return road
+
+    def get_reqs(self, user):
+        reqs = {}
+
+
+        return reqs
 
     def get(self, request, format=None):
-        subjects = self.get_subjects(request.user)
+        road_dict = self.get_road(request.user)
+        req_dict = self.get_reqs(request.user)
 
-        r = Road(subjects)
+        r = Road(road_dict, req_dict)
+
+        # Check pre-requisites
         sat_dict = r.check_pre_reqs()
-        print(sat_dict)
 
         for subject in sat_dict:
             subject_obj = Subject.objects.get(subjectId=subject)
@@ -397,8 +405,4 @@ class Rules(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-        # req_file = open('courseroad/static/courseroad/6-3.req')
-        # for s in subjects:
-        #     print(s.number, s.semester.semester_id)
-        # run(subjects, req_file)
 

@@ -303,37 +303,52 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
 
 
 class Road:
-    def __init__(self, subjects={}, course=None):
-        self.subject_dict = subjects
-        self.all_subjects = []
+    def __init__(self, road:dict, buckets:dict):
+        self.road_dict = road
+        self.buckets = buckets
+        self.subjects = set()
 
-        for year in subjects.values():
+        for year in road.values():
             for semester in year.values():
                 for subject in semester:
-                    self.all_subjects.append(subject)
+                    self.subjects.add(subject)
 
-        self.course = course
 
-    def check_course(self):
-        if self.course is None:
-            return None
+    def check_buckets(self):
+        bucket_sat = {bucket: False for bucket in self.buckets}
+
+        for bucket in self.buckets:
+            req_obj = self.buckets[bucket]
+            sat = req_obj.is_satisfied(self.subjects)
+
+            bucket_sat[bucket] = None
+
+        return bucket_sat
+
+    def check_major(self):
+        if self.major is None:
+            raise ValueError('self.major cannot be None')
+
+        # pickle_file = './static/courseroad/' + self.major + '.p'
+        # major_req = pickle.load(open(pickle_file, 'rb'))
+        return self.major.is_satisfied(self.subjects)
 
     def check_pre_reqs(self):
-        req_sat = {subject: False for subject in self.all_subjects}
+        pre_req_sat = {subject: False for subject in self.subjects}
 
         already_taken = []
         currently_taking = []
 
-        for year in self.subject_dict.values():
+        for year in self.road_dict.values():
             for semester in year.values():
                 currently_taking += semester
-                # print(currently_taking)
+
                 for subject in semester:
-                    req_sat[subject] = self.sat_req(subject, already_taken, currently_taking)
+                    pre_req_sat[subject] = self.sat_req(subject, already_taken, currently_taking)
 
                 already_taken += semester
 
-        return req_sat
+        return pre_req_sat
 
     def sat_req(self, subject, already_taken, currently_taking):
         try:
