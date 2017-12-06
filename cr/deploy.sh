@@ -1,7 +1,9 @@
 echo 'Running npm build'
-npm run dev
+npm run build
 echo 'Done...'
 
-export PORT=8000
-echo 'Server runnning on port ' $PORT
-python3 ../manage.py runserver
+echo 'Deploying to Firebase'
+firebase deploy
+echo 'Done...'
+
+open https://courseroad-8b1c5.firebaseapp.com/
