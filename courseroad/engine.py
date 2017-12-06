@@ -1,5 +1,5 @@
 import json
-# from courseroad.models import Subject
+from courseroad.models import Subject
 
 
 class RequirementFactory:
