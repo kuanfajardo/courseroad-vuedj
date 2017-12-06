@@ -1,74 +1,5 @@
 import json
-
-
-def prepare_output(obj, sat, level=0):
-    typ = obj["type"]
-    name = obj["name"] if "name" in obj else None
-    reqs = obj["reqs"] if "reqs" in obj else None
-    idd = obj["idd"]
-
-    str_arr = []
-    if typ == "req":
-        name_str = name  # assumes each "req" type has a name
-        str_arr.append((name_str, level, sat[idd][0]))
-
-        for req in reqs:
-            str_arr += prepare_output(req, sat, level + 1)
-
-        return str_arr
-
-    if typ == "leaf":
-        ct = obj["count"]
-        required = ct == -1
-        tag_req = "tag" in obj
-
-        if name:
-            str_arr.append((name, level, sat[idd][0]))  # remove Y/N from name level
-            level += 1
-
-        if tag_req:
-            str_arr.append(("* " + str(ct) + " class tagged as \'" + obj["tag"] + "\'", level, True
-                            if sat[idd][0]
-                            else False))
-
-            return str_arr
-
-        if required:
-            for subject in reqs:
-                subj_str = subject
-                str_arr.append((subj_str, level, True if sat[subject][0] else False))
-
-            return str_arr
-
-        else:
-            tri_str = str(obj["count"]) + " of: "
-            for i, option in enumerate(obj["reqs"]):
-                tri_str += option
-
-                if i != len(obj["reqs"]) - 1:
-                    tri_str += ", "
-
-            str_arr.append((tri_str, level, sat[idd][0]))
-
-            return str_arr
-
-    if typ == "path":
-        name_str = name  # assumes each path has a name
-        str_arr.append((name_str, level, sat[idd][0]))
-
-        level += 1
-        str_arr.append(("1 of:", level, sat[idd][0]))
-
-        for path in obj["paths"]:
-            name_str = "PATH " + str(path["pid"])
-            str_arr.append((name_str, level + 1, ""))
-
-            for req in path["reqs"]:
-                str_arr += prepare_output(req, sat, level + 2)
-
-        return str_arr
-
-from courseroad.models import Subject
+# from courseroad.models import Subject
 
 
 class RequirementFactory:
@@ -209,6 +140,73 @@ class BaseRequirement:
         """
 
         pass
+
+    def prepare_output(obj, sat, level=0):
+        typ = obj["type"]
+        name = obj["name"] if "name" in obj else None
+        reqs = obj["reqs"] if "reqs" in obj else None
+        idd = obj["idd"]
+
+        str_arr = []
+        if typ == "req":
+            name_str = name  # assumes each "req" type has a name
+            str_arr.append((name_str, level, sat[idd][0]))
+
+            for req in reqs:
+                str_arr += prepare_output(req, sat, level + 1)
+
+            return str_arr
+
+        if typ == "leaf":
+            ct = obj["count"]
+            required = ct == -1
+            tag_req = "tag" in obj
+
+            if name:
+                str_arr.append((name, level, sat[idd][0]))  # remove Y/N from name level
+                level += 1
+
+            if tag_req:
+                str_arr.append(("* " + str(ct) + " class tagged as \'" + obj["tag"] + "\'", level, True
+                                if sat[idd][0]
+                                else False))
+
+                return str_arr
+
+            if required:
+                for subject in reqs:
+                    subj_str = subject
+                    str_arr.append((subj_str, level, True if sat[subject][0] else False))
+
+                return str_arr
+
+            else:
+                tri_str = str(obj["count"]) + " of: "
+                for i, option in enumerate(obj["reqs"]):
+                    tri_str += option
+
+                    if i != len(obj["reqs"]) - 1:
+                        tri_str += ", "
+
+                str_arr.append((tri_str, level, sat[idd][0]))
+
+                return str_arr
+
+        if typ == "path":
+            name_str = name  # assumes each path has a name
+            str_arr.append((name_str, level, sat[idd][0]))
+
+            level += 1
+            str_arr.append(("1 of:", level, sat[idd][0]))
+
+            for path in obj["paths"]:
+                name_str = "PATH " + str(path["pid"])
+                str_arr.append((name_str, level + 1, ""))
+
+                for req in path["reqs"]:
+                    str_arr += prepare_output(req, sat, level + 2)
+
+            return str_arr
 
 
 class ListRequirement(BaseRequirement): # type == "req"
