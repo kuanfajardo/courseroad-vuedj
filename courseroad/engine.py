@@ -1,5 +1,4 @@
 import json
-# from courseroad.models import Subject
 
 
 def prepare_output(obj, sat, level=0):
@@ -69,6 +68,7 @@ def prepare_output(obj, sat, level=0):
 
         return str_arr
 
+from courseroad.models import Subject
 
 
 class RequirementFactory:
@@ -91,6 +91,7 @@ class RequirementFactory:
 
         if typ == "req":
             return ListRequirement(req_obj)
+
 
 class Sat:
     def __init__(self, key, count=-1, sat:bool=True):
@@ -127,10 +128,6 @@ class Sat:
             if sat:
                 self._i += 1
 
-            if key in self._sat_dict:
-                if sat != self._sat_dict[key]:
-                    raise AssertionError("Conflicting values for same key \'" + key + "\'")
-
             self._sat_dict.update({key: sat})
 
         # Update raw sat value
@@ -143,21 +140,43 @@ class Sat:
         pass
 
 
-# class Checker:
-#     def __init__(self, req_obj:BaseRequirement):
-#         self.req_obj = req_obj
-#
-#         self._all_subjects = set()
-#         self._used_subjects = set()
-#         self._remove = False
-#
-#     def check(self, subjects:set):
-#         self.all_subjects = subjects
-#         return self.req_obj.is_satisfied(self.subjects)
-#
-#     @property
-#     def subjects(self):
-#         return self._all_subjects.difference(self._used_subjects)
+class Checker:
+    def __init__(self, req_obj):
+        self.req_obj = req_obj
+
+        self._all_subjects = set()
+        self._used_subjects = set()
+
+        self._remove = True
+        self._checking_path = False
+
+        self._temp_subjects = {}
+        self._path_stack = []
+
+    def check(self, subjects:set):
+        self._all_subjects = subjects
+        return self.req_obj.is_satisfied(self)
+
+    @property
+    def subjects(self):
+        return self._all_subjects.difference(self._used_subjects)
+
+    def use_subject(self, subject):
+        """
+        Remove subject only if being used to satisfy req that can't double count (i.e. excluding tags and paths)
+        :param subject:
+        :return:
+        """
+        if self._remove:
+            self._used_subjects.add(subject)
+
+    # TODO: fix path using of subjects
+    def enter_path(self, path_obj):
+        self._temp_subjects[path_obj["idd"]] = {}
+
+    def exit_path(self, path_id):
+        pass
+
 
 class BaseRequirement:
     def __init__(self, req_obj):
@@ -176,8 +195,9 @@ class BaseRequirement:
         if "pid" in req_obj:
             self.path_id = req_obj["pid"]
 
+        self.checker = None
 
-    def is_satisfied(self, subjects:set, used:set=None, remove_subjects:bool=True):
+    def is_satisfied(self, checker:Checker):
         """
         Determine if requirement is satisfied. TO BE OVERRIDDEN
 
@@ -201,12 +221,12 @@ class ListRequirement(BaseRequirement): # type == "req"
         for req in req_obj["reqs"]:
             self.requirements.append(RequirementFactory.create(req))
 
-    def is_satisfied(self, subjects:set):
+    def is_satisfied(self, checker:Checker):
         sat = Sat(self.req_id, self.count)
 
         ct = 0
         for req in self.requirements:
-            req_sat = req.is_satisfied(subjects)
+            req_sat = req.is_satisfied(checker)
             if req_sat:
                 ct += 1
 
@@ -228,17 +248,19 @@ class PathRequirement(BaseRequirement): # type == "path"
         for path in req_obj["paths"]:
             self.paths.append(RequirementFactory.create(path))
 
-    def is_satisfied(self, subjects:set):
+    def is_satisfied(self, checker:Checker):
+        checker._remove = False
         sat = Sat(self.req_id, self.count)
 
         ct = 0
         for path in self.paths:
-            path_sat = path.is_satisfied(subjects)
+            path_sat = path.is_satisfied(checker)
             if path_sat:
                 ct += 1
 
             sat.update(path_sat)
 
+        checker._remove = True
         return sat
 
 
@@ -247,11 +269,11 @@ class TagRequirement(BaseRequirement): # type == "leaf", has TAG
         super().__init__(req_obj)
         self.tag = req_obj["tag"]
 
-    def is_satisfied(self, subjects:set):
+    def is_satisfied(self, checker:Checker):
         sat = Sat(self.req_id, self.count)
 
         ct = 0
-        for subject in subjects:
+        for subject in checker.subjects:
             if True:
                 ct += 1
 
@@ -266,16 +288,18 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
         super().__init__(req_obj)
         self.requirements = req_obj["reqs"]
 
-    def is_satisfied(self, subjects:set):
+    def is_satisfied(self, checker:Checker):
         sat = Sat(self.req_id, self.count)
 
         ct = 0
         for req in self.requirements:
-            if req in subjects:
+            if req in checker.subjects:
                 ct += 1
 
-            new_sat = Sat(req, sat=req in subjects)
+            new_sat = Sat(req, sat=req in checker.subjects)
             sat.update(new_sat)
+
+            checker.use_subject(req)
 
         return sat
 
@@ -420,3 +444,15 @@ class Road:
 
 
         return sat_pre_req() and sat_co_req()
+
+def test():
+    import pickle
+
+    pickle_file = "./static/courseroad/6-3.p"
+    r = pickle.load(open(pickle_file, 'rb'))
+    subj = {'6.01', '6.0001', '6.004', '6.006', '6.009', '6.031'}
+
+    sat = Checker(r).check(subj)
+    print(sat)
+
+test()
