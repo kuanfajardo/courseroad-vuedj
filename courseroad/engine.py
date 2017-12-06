@@ -92,6 +92,72 @@ class RequirementFactory:
         if typ == "req":
             return ListRequirement(req_obj)
 
+class Sat:
+    def __init__(self, key, count=-1, sat:bool=True):
+        self.key = key
+        self._sat_dict = {key: sat}
+
+        self._count = count
+        self._required = self._count == -1
+
+        self._i = 0
+
+    def __bool__(self):
+        return self._sat_dict[self.key]
+
+    def __iter__(self):
+        for k, v in self._sat_dict.items():
+            yield (k, v)
+
+    def __rand__(self, other):
+        return bool(other) and bool(self)
+
+    def __str__(self):
+        return str(self.key) + " satisfied: " + str(bool(self)) + "\n" + str(self._sat_dict)
+
+    def __getitem__(self, item):
+        return self._sat_dict.get(item, False)
+
+    def update(self, other):
+        if type(other) is not Sat:
+            raise TypeError("\'other\' param is not a Sat object")
+
+        # Update sat dict
+        for key, sat in other:
+            if sat:
+                self._i += 1
+
+            if key in self._sat_dict:
+                if sat != self._sat_dict[key]:
+                    raise AssertionError("Conflicting values for same key \'" + key + "\'")
+
+            self._sat_dict.update({key: sat})
+
+        # Update raw sat value
+        if self._required:
+            self._sat_dict[self.key] &= other
+        else:
+            self._sat_dict[self.key] = self._i >= self._count
+
+    def to_json(self):
+        pass
+
+
+# class Checker:
+#     def __init__(self, req_obj:BaseRequirement):
+#         self.req_obj = req_obj
+#
+#         self._all_subjects = set()
+#         self._used_subjects = set()
+#         self._remove = False
+#
+#     def check(self, subjects:set):
+#         self.all_subjects = subjects
+#         return self.req_obj.is_satisfied(self.subjects)
+#
+#     @property
+#     def subjects(self):
+#         return self._all_subjects.difference(self._used_subjects)
 
 class BaseRequirement:
     def __init__(self, req_obj):
@@ -111,13 +177,15 @@ class BaseRequirement:
             self.path_id = req_obj["pid"]
 
 
-    def is_satisfied(self, subjects:set, sat_dict:dict=None):
+    def is_satisfied(self, subjects:set, used:set=None, remove_subjects:bool=True):
         """
         Determine if requirement is satisfied. TO BE OVERRIDDEN
 
         :param subjects: set of subjectIDs (strings)
-        :return: True if requirement is satisfied with the given subjects
-        :rtype:tuple
+        :param used: set of subjects already used to satisfy other requirements
+        :param remove_subjects: if True, will add all subjects used to satisfy requirement to "used"
+        :return:
+        :rtype:Sat
         """
 
         pass
@@ -133,27 +201,21 @@ class ListRequirement(BaseRequirement): # type == "req"
         for req in req_obj["reqs"]:
             self.requirements.append(RequirementFactory.create(req))
 
-    def is_satisfied(self, subjects:set, sat_dict:dict=None):
-        if sat_dict is None:
-            sat_dict = {}
+    def is_satisfied(self, subjects:set):
+        sat = Sat(self.req_id, self.count)
 
         ct = 0
         for req in self.requirements:
-            req_sat, sat_dict = req.is_satisfied(subjects, sat_dict)
+            req_sat = req.is_satisfied(subjects)
             if req_sat:
                 ct += 1
+
+            sat.update(req_sat)
 
             if ct == self.count:
                 break
 
-        if self.required:
-            sat = ct == len(self.requirements)
-
-        else:
-            sat = ct == self.count
-
-        sat_dict[self.req_id] = sat
-        return (sat, sat_dict)
+        return sat
 
 
 class PathRequirement(BaseRequirement): # type == "path"
@@ -166,23 +228,18 @@ class PathRequirement(BaseRequirement): # type == "path"
         for path in req_obj["paths"]:
             self.paths.append(RequirementFactory.create(path))
 
-    def is_satisfied(self, subjects:set, sat_dict:dict=None):
-        if sat_dict is None:
-            sat_dict = {}
+    def is_satisfied(self, subjects:set):
+        sat = Sat(self.req_id, self.count)
 
         ct = 0
         for path in self.paths:
-            path_sat, sat_dict = path.is_satisfied(subjects, sat_dict)
+            path_sat = path.is_satisfied(subjects)
             if path_sat:
                 ct += 1
 
-        if self.required:
-            sat = ct == len(self.paths)
-        else:
-            sat = ct == self.count
+            sat.update(path_sat)
 
-        sat_dict[self.req_id] = sat
-        return (sat, sat_dict)
+        return sat
 
 
 class TagRequirement(BaseRequirement): # type == "leaf", has TAG
@@ -190,9 +247,8 @@ class TagRequirement(BaseRequirement): # type == "leaf", has TAG
         super().__init__(req_obj)
         self.tag = req_obj["tag"]
 
-    def is_satisfied(self, subjects:set, sat_dict:dict=None):
-        if sat_dict is None:
-            sat_dict = []
+    def is_satisfied(self, subjects:set):
+        sat = Sat(self.req_id, self.count)
 
         ct = 0
         for subject in subjects:
@@ -202,9 +258,7 @@ class TagRequirement(BaseRequirement): # type == "leaf", has TAG
             if ct == self.count:
                 break
 
-        sat = ct == self.count
-        sat_dict[self.req_id] = sat
-        return (sat, sat_dict)
+        return sat
 
 
 class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
@@ -212,24 +266,18 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
         super().__init__(req_obj)
         self.requirements = req_obj["reqs"]
 
-    def is_satisfied(self, subjects:set, sat_dict:dict=None):
-        if sat_dict is None:
-            sat_dict = []
+    def is_satisfied(self, subjects:set):
+        sat = Sat(self.req_id, self.count)
 
         ct = 0
         for req in self.requirements:
             if req in subjects:
                 ct += 1
 
-            sat_dict[req] = req in subjects
+            new_sat = Sat(req, sat=req in subjects)
+            sat.update(new_sat)
 
-        if self.required:
-            sat = ct == len(self.requirements)
-        else:
-            sat = ct == self.count
-
-        sat_dict[self.req_id] = sat
-        return (sat, sat_dict)
+        return sat
 
 
 class Road:
