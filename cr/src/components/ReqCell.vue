@@ -1,5 +1,5 @@
 <template>
-  <b-container class="req-cell" fluid>
+  <div class="req-cell">
      <b-row align-h="between" align-v="center">
       <b-col cols="8" class="pt-3">
         <p>{{ cell.name }}</p>
@@ -10,10 +10,10 @@
     </b-row>
     <b-row :class="[ collapse ? 'pb-0' : 'pb-3' ]">
       <b-col cols="12">
-        <b-container v-if="!collapse" class="px-0">
+        <div v-if="!collapse" class="px-0">
           <b-row v-for="(row, index) in cell.rows" align-v="center" align-h="between" :key="index">
             <b-col cols="8">
-              <b-form-checkbox size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
+              <b-form-checkbox :id="'check' + index" size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
                {{ row.text }}
               </b-form-checkbox>
             </b-col>
@@ -21,10 +21,10 @@
               <!--<class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>-->
             </b-col>
           </b-row>
-        </b-container>
+        </div>
       </b-col>
     </b-row>
-  </b-container>
+  </div>
 </template>
 
 <script>
@@ -64,20 +64,18 @@
 .req-cell {
   border-style: solid;
   border-width: thin;
-  border-left-style: none;
-  border-right-style: none;
   border-color: #5e67b4;
   color: #000;
+  border-left-style: none;
+  border-right-style: none;
 }
 
-
-.custom-control-input:checked ~ .custom-control-indicator {
-  color: #fff;
+[id^=check].custom-control-input:checked~.custom-control-indicator {
   background-color: #768bcd;
 }
 
 .collapse-button {
-    background-color: #768bcd;
+  background-color: #768bcd;
   border-radius: 1rem;
   border-style: none;
   color: #fff;

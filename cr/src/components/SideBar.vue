@@ -1,16 +1,18 @@
 <template>
-  <b-container class="sidebar">
-    <b-row>
-      <b-col cols="4" class="sidebar1">
-        <info-box v-on:deleteSubject="deleteSubjects" :selected="selected"></info-box>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col cols="4" class="sidebar2">
-        <subject-box></subject-box>
-      </b-col>
-    </b-row>
- </b-container>
+  <b-row id="sidebar">
+    <b-col cols="12">
+      <b-row id="sidebar1">
+        <b-col cols="12">
+          <info-box v-on:deleteSubject="deleteSubjects" :selected="selected"></info-box>
+        </b-col>
+      </b-row>
+      <b-row id="sidebar2">
+        <b-col cols="12">
+          <subject-box></subject-box>
+        </b-col>
+      </b-row>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
@@ -46,18 +48,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
-.sidebar {
+#sidebar {
   position: fixed;
-  /*top:50%;*/
-  /*left:0;*/
-  /*bottom: 50%;*/
-  /*top: 0;*/
-  /*right: 2%;*/
-  height: 20rem;
-  /*background-color: #0c5460;*/
+  width: 25%;
 }
 
-.sidebar1 {
+#sidebar1 {
   border-left-width: thin;
   border-left-color: #5e67b4;
   border-left-style: solid;
@@ -66,21 +62,16 @@ export default {
   border-bottom-color: #5e67b4;
   border-bottom-style: solid;
 
-  padding-left: 0;
   margin-top: 0;
-  padding-right: 2rem;
-  /*background-color: #ffc520;*/
   min-height: 12rem;
   max-height: 12rem;
 }
 
-.sidebar2 {
+#sidebar2 {
   border-left-width: thin;
   border-left-color: #5e67b4;
   border-left-style: solid;
 
-  padding-left: 0;
-  padding-right: 2rem;
   background-color: rgba(252, 225, 229, 0.12);
   min-height: 35rem;
   max-height: 35rem;

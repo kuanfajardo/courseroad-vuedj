@@ -1,17 +1,23 @@
 <template>
-  <div class="subject-box">
-    <!--<p v-if="ok" align="right">course/subjects</p>-->
-    <b-dropdown :text="navText" right id="bucketDrop" size="lg">
-      <b-dropdown-header id="header0">Requirements</b-dropdown-header>
-      <b-dropdown-item v-for="bucket in reqs" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
-      <b-dropdown-header id="header1">Buckets</b-dropdown-header>
-      <b-dropdown-item v-for="bucket in custom" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
-    </b-dropdown>
-
-    <b-container class="req-container">
-      <req-cell v-for="(cell, index) in selectedCells" :cell="cell" :key="index" :class="{ mid: index !== 0 }"></req-cell>
-    </b-container>
-  </div>
+  <b-row class="subject-box">
+    <b-col cols="12">
+      <b-row>
+        <b-col cols="12" class="px-0">
+          <b-dropdown :text="navText" right id="bucketDrop" size="lg">
+            <b-dropdown-header id="header0">Requirements</b-dropdown-header>
+            <b-dropdown-item v-for="bucket in reqs" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
+            <b-dropdown-header id="header1">Buckets</b-dropdown-header>
+            <b-dropdown-item v-for="bucket in custom" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
+          </b-dropdown>
+        </b-col>
+      </b-row>
+      <b-row class="req-container">
+        <b-col cols="12">
+          <req-cell v-for="(cell, index) in selectedCells" :cell="cell" :key="index" :class="{ mid: index !== 0 }"></req-cell>
+        </b-col>
+      </b-row>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
@@ -557,21 +563,6 @@
     justify-content: center;
     overflow: scroll;
     height: 100%;
-    /*overflow-style: auto;*/
-  }
-
-  /*p {*/
-    /*font-size: 1.5em;*/
-    /*padding-top: 1rem;*/
-    /*padding-right: 1.5rem;*/
-  /*}*/
-
-  .navbar {
-    background-color: rgba(138, 149, 255, 0.29);
-  }
-
-  #navTitle {
-    color: #0a0a0a;
   }
 
   #bucketDrop {
@@ -589,7 +580,6 @@
   }
 
   .req-container {
-    /*width: 100%;*/
     margin-top: 1rem;
   }
 

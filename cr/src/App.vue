@@ -9,7 +9,7 @@
     ></nav-bar>
     <b-container class="main h-100" fluid>
       <b-row>
-        <b-col cols="9" class="coll-1" :class="{ loading: isLoading, updated: !isLoading}">
+        <b-col cols="9" :class="{ loading: isLoading, updated: !isLoading}">
           <year v-for="year in years"
                 :key="year.year_id"
                 :id="year.year_id"
@@ -19,9 +19,9 @@
                 v-on:drp="drp">
           </year>
         </b-col>
-      <b-col cols="3" class="coll-2">
-        <side-bar v-on:deleteSubjects="deleteSelectedSubjects" :selected="selected"></side-bar>
-      </b-col>
+        <b-col cols="3">
+          <side-bar v-on:deleteSubjects="deleteSelectedSubjects" :selected="selected"></side-bar>
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -396,14 +396,6 @@ export default {
 
 .loading {
   opacity: 0.5;
-}
-
-.coll-1 {
-  height: 100%;
-}
-
-.coll-2 {
-  height: 100%;
 }
 
 body {
