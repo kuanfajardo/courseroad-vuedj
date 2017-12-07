@@ -29,7 +29,7 @@
     data () {
       return {
         ok: true,
-        selectedBucketID: 0
+        selectedBucketIndex: 0
       }
     },
 
@@ -50,13 +50,13 @@
       },
 
       updateBucket (bucket) {
-        this.selectedBucketID = bucket.id
+        this.selectedBucketIndex = this.buckets.indexOf(bucket)
       }
     },
 
     computed: {
       navText: function () {
-        var selected = this.buckets[this.selectedBucketID]
+        var selected = this.buckets[this.selectedBucketIndex]
 
         if (selected === undefined) {
           return ''
@@ -93,7 +93,7 @@
       },
 
       selectedCells: function () {
-        var bucket = this.buckets[this.selectedBucketID]
+        var bucket = this.buckets[this.selectedBucketIndex]
 
         if (bucket === undefined) {
           return []
