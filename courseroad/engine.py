@@ -361,7 +361,7 @@ class RequirementFactory:
     def create(cls, req_obj:object=None, filename:str=None, obj_name:str=None):
         if req_obj is None:
             if filename is not None:
-                file_obj = open(str(req_obj))
+                file_obj = open(str(filename))
                 req_obj = json.load(file_obj)
 
             elif obj_name is not None:
