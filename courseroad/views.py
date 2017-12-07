@@ -53,7 +53,6 @@ class UserSubjectList(APIView):
         if subject is None:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error_type": 0})
 
-        print(request)
         serializer = UserSubjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(subject=subject, user=request.user, semester=semester)
@@ -67,20 +66,15 @@ class UserSubjectDetail(APIView):
     """
     def get_object(self, year_id, semester_id, subject_id, user):
         try:
-            print("yetet")
-
-            print(user.username)
             year = Year.objects.get(user=user, year_id=year_id)
-            print(year)
             semester = Semester.objects.get(year=year, semester_id=semester_id)
-            print(semester)
             subject = Subject.objects.get(subjectId=subject_id)
+
             return UserSubject.objects.get(semester=semester, subject=subject)
         except:
             raise Http404
 
     def get(self, request, year_id, username, semester_id, subject_id, format=None):
-        print(subject_id, year_id, username, semester_id)
         subject = self.get_object(year_id, semester_id, subject_id, request.user)
         serializer = UserSubjectSerializer(subject)
         return Response(serializer.data)
@@ -94,15 +88,12 @@ class UserSubjectDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, year_id, username, semester_id, subject_id, format=None):
-        print("dfg")
         subject = self.get_object(year_id, semester_id, subject_id, request.user)
         subject.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     def options(self, request, *args, **kwargs):
-        print(request)
-        print("yeter")
         return Response(status=status.HTTP_200_OK)
 
 
