@@ -11,13 +11,14 @@
     <b-row :class="[ collapse ? 'pb-0' : 'pb-3' ]">
       <b-col cols="12">
         <div v-if="!collapse" class="px-0">
-          <b-row v-for="(row, index) in cell.rows" align-v="center" align-h="between" :key="index">
+          <b-row v-for="(row, index) in cell.rows" align-v="center" align-h="between" :key="index" class="pl-3">
             <b-col cols="8">
               <b-form-checkbox :id="'check' + index" size="md" :style="{ 'margin-left': row.indentLevel * 1.5 + 'rem' }" v-model="row.checked" value="y" disabled>
                {{ row.text }}
               </b-form-checkbox>
             </b-col>
             <b-col cols="3">
+              <!-- TODO: fix this -->
               <!--<class-thumb v-if="row.buttonText !== ''" :text="row.buttonText"></class-thumb>-->
             </b-col>
           </b-row>

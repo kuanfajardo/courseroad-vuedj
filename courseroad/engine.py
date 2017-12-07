@@ -81,7 +81,7 @@ class Checker:
         if self._remove:
             self._used_subjects.add(subject)
 
-    # TODO: fix path using of subjects
+    # TODO: fix using of subjects in paths (i.e. only 'use' them globally if selecting its path
     def enter_path(self, path_obj):
         self._temp_subjects[path_obj["idd"]] = {}
 
