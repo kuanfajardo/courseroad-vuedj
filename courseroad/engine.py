@@ -47,15 +47,9 @@ class Sat:
 
             self._sat_dict.update({key: sat})
 
-        # Update raw sat value
-        if self._required:
-            self._sat_dict[self.key] &= other
-        else:
-            self._sat_dict[self.key] = self._i >= self._count
 
-    def to_json(self):
-        pass
-
+    def set(self, value:bool):
+        self._sat_dict[self.key] = value
 
 class Checker:
     def __init__(self, req_obj):
@@ -183,13 +177,19 @@ class ListRequirement(BaseRequirement): # type == "req"
             if ct == self.count:
                 break
 
+        if self.required:
+            sat_val = ct == len(self.requirements)
+        else:
+            sat_val = ct >= self.count
+
+        sat.set(sat_val)
+
         return sat
 
     def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
         rows = []
         if not self.required:
             rows += [
-                # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
                 self.create_count_row(self.count, indentLevel, sat[self.req_id])
             ]
 
@@ -229,6 +229,13 @@ class PathRequirement(BaseRequirement): # type == "path"
 
             sat.update(path_sat)
 
+        if self.required:
+            sat_val = ct == len(self.paths)
+        else:
+            sat_val = ct >= self.count
+
+        sat.set(sat_val)
+
         checker._remove = True
         return sat
 
@@ -236,7 +243,6 @@ class PathRequirement(BaseRequirement): # type == "path"
         rows = []
 
         rows += [
-            # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
             self.create_count_row(self.count, indentLevel, sat[self.req_id])
         ]
 
@@ -268,11 +274,14 @@ class TagRequirement(BaseRequirement): # type == "leaf", has TAG
             if ct == self.count:
                 break
 
+
+        sat_val = ct >= self.count
+        sat.set(sat_val)
+
         return sat
 
     def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
         rows = [
-            # self.create_row_obj(self.tag, indentLevel, "y" if sat[self.req_id] else "n", "")
             self.create_row(self.tag, indentLevel, sat[self.req_id])
         ]
 
@@ -303,13 +312,18 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
 
             checker.use_subject(req)
 
+        if self.required:
+            sat_val = ct == len(self.requirements)
+        else:
+            sat_val = ct >= self.count
+
+        sat.set(sat_val)
         return sat
 
     def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
         rows = []
         if not self.required:
             rows += [
-                # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
                 self.create_count_row(self.count, indentLevel, sat[self.req_id])
             ]
 
@@ -317,7 +331,7 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
 
         for req in self.requirements:
             rows += [
-                # self.create_row_obj(req, indentLevel, "y" if sat[req] else "n", req)
+                # TODO: create option for "used to satisfy other req"
                 self.create_button_row(req, indentLevel, sat[req])
             ]
 
@@ -548,7 +562,7 @@ def test():
     # print(RequirementFactory.create(test_obj).to_json(sat, root=True))
 
     ##
-    print(Bucket(r, 0).check_sat(subj))
+    print(Bucket(r).check_sat(subj))
 
 
 # test()
