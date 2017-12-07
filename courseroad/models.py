@@ -75,7 +75,7 @@ class Bucket(models.Model):
     user = models.ForeignKey('auth.User', related_name='buckets')
 
     requirement_obj = PickledObjectField()
-    json = PickledObjectField()
+    cells = PickledObjectField()
 
     class Meta:
         unique_together = (('name', 'user'), ('index', 'user'))

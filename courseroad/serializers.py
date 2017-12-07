@@ -40,7 +40,7 @@ class YearSerializer(serializers.ModelSerializer):
 
 class BucketSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True)
-    json = serializers.JSONField(default={})
+    cells = serializers.JSONField(default={})
 
     class Meta:
         model = Bucket
