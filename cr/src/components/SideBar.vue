@@ -8,7 +8,7 @@
       </b-row>
       <b-row id="sidebar2">
         <b-col cols="12">
-          <subject-box></subject-box>
+          <subject-box :buckets="buckets"></subject-box>
         </b-col>
       </b-row>
     </b-col>
@@ -40,7 +40,7 @@ export default {
   },
 
   props: [
-    'selected'
+    'selected', 'buckets'
   ]
 }
 </script>

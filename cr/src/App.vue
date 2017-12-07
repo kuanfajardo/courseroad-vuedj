@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav-bar v-on:addSubject="addSubject"
-             :buckets="buckets"
+             :buckets="customBuckets"
              :semesters="semesters"
              :courses="courses"
              :selectedCourse="'6-3'"
@@ -41,83 +41,512 @@ export default {
       ],
       semesters: [
         {
-          type: 's',
           name: 'Freshman Fall',
           id: 0
         },
         {
-          type: 's',
           name: 'Freshman IAP',
           id: 1
         },
         {
-          type: 's',
           name: 'Freshman Spring',
           id: 2
         },
         {
-          type: 's',
           name: 'Sophomore Fall',
           id: 3
         },
         {
-          type: 's',
           name: 'Sophomore IAP',
           id: 4
         },
         {
-          type: 's',
           name: 'Sophomore Spring',
           id: 5
         },
         {
-          type: 's',
           name: 'Junior Fall',
           id: 6
         },
         {
-          type: 's',
           name: 'Junior IAP',
           id: 7
         },
         {
-          type: 's',
           name: 'Junior Spring',
           id: 8
         },
         {
-          type: 's',
           name: 'Senior Fall',
           id: 9
         },
         {
-          type: 's',
           name: 'Senior IAP',
           id: 10
         },
         {
-          type: 's',
           name: 'Senior Spring',
           id: 11
-        }
-      ],
-      buckets: [
-        {
-          type: 'b',
-          name: 'HASS Ideas',
-          id: 0
-        },
-        {
-          type: 'b',
-          name: 'Want To Take',
-          id: 1
         }
       ],
       selectedSubjects: {},
       selected: {},
       years: [],
       isLoading: false,
-      navBarText: ''
+      navBarText: '',
+
+      // Invariant: id === index in buckets
+      buckets: [
+        {
+          custom: false,
+          name: 'GIRs',
+          id: 0,
+          cells: [
+            {
+              name: 'Physics',
+              rows: [
+                {
+                  text: 'Physics I',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'Physics II',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                }
+              ]
+            },
+            {
+              name: 'Calculus',
+              rows: [
+                {
+                  text: 'Calculus I',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'Calculus II',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                }
+              ]
+            },
+            {
+              name: 'Biology',
+              rows: [
+                {
+                  text: '1 of:',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: '7.012',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '7.012'
+                },
+                {
+                  text: '7.013',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '7.013'
+                },
+                {
+                  text: '7.014',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '7.014'
+                },
+                {
+                  text: '7.015',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '7.015'
+                },
+                {
+                  text: '7.016',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: '7.016'
+                }
+              ]
+            },
+            {
+              name: 'Chemistry',
+              rows: [
+                {
+                  text: '1 of:',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: '5.111',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '5.111'
+                },
+                {
+                  text: '5.112',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '5.112'
+                },
+                {
+                  text: '3.091',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: '3.091'
+                }
+              ]
+            },
+            {
+              name: 'HASS',
+              rows: [
+                {
+                  text: 'Distribution',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'HASS-H',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'HASS-S',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'HASS-A',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'Concentration',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: 'Electives',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: 'HASS-E (1)',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'HASS-E (2)',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: ''
+                }
+              ]
+            },
+            {
+              name: 'REST',
+              rows: [
+                {
+                  text: 'REST (1)',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: 'REST (2)',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                }
+              ]
+            },
+            {
+              name: 'LAB',
+              rows: [
+                {
+                  text: 'Institute Lab',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                }
+              ]
+            }
+          ]
+        },
+        {
+          custom: false,
+          name: '6-3',
+          id: 1,
+          cells: [
+            {
+              name: 'Intro/Programming',
+              rows: [
+                {
+                  text: '1 of:',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: 'Path One',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '1 of:',
+                  indentLevel: 2,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '6.01',
+                  indentLevel: 3,
+                  checked: 'y',
+                  buttonText: '6.01'
+                },
+                {
+                  text: '6.S08',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.S08'
+                },
+                {
+                  text: '6.S080',
+                  indentLevel: 2,
+                  checked: 'n',
+                  buttonText: '6.S080'
+                },
+                {
+                  text: 'Path Two',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '1 of:',
+                  indentLevel: 2,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '6.01',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.01'
+                },
+                {
+                  text: '6.S08',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.S08'
+                },
+                {
+                  text: '6.02',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.02'
+                },
+                {
+                  text: '6.03',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.03'
+                },
+                {
+                  text: '1 of:',
+                  indentLevel: 2,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '6.0001',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.0001'
+                },
+                {
+                  text: '6.0002',
+                  indentLevel: 3,
+                  checked: 'n',
+                  buttonText: '6.0002'
+                }
+              ]
+            },
+            {
+              name: 'Foundation',
+              rows: [
+                {
+                  text: '6.004',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: '6.004'
+                },
+                {
+                  text: '6.006',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: '6.006'
+                },
+                {
+                  text: '6.009',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: '6.009'
+                }
+              ]
+            },
+            {
+              name: 'Header',
+              rows: [
+                {
+                  text: '6.031',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: '6.031'
+                },
+                {
+                  text: '6.033',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: '6.033'
+                },
+                {
+                  text: '1 of:',
+                  indentLevel: 0,
+                  checked: '',
+                  buttonText: ''
+                },
+                {
+                  text: '6.034',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '6.034'
+                },
+                {
+                  text: '6.036',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '6.036'
+                },
+                {
+                  text: '1 of:',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: ''
+                },
+                {
+                  text: '6.045',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '6.045'
+                },
+                {
+                  text: '6.046',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: '6.046'
+                }
+              ]
+            },
+            {
+              name: 'Communication',
+              rows: [
+                {
+                  text: '1 of',
+                  indentLevel: 0,
+                  checked: 'n',
+                  buttonText: ''
+                },
+                {
+                  text: '6.UAR',
+                  indentLevel: 1,
+                  checked: 'y',
+                  buttonText: '6.UAR'
+                },
+                {
+                  text: '6.UAT',
+                  indentLevel: 1,
+                  checked: 'n',
+                  buttonText: '6.UAT'
+                }
+              ]
+            },
+            {
+              name: 'AUS',
+              rows: [
+                {
+                  text: 'AUS',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: 'AUS'
+                }
+              ]
+            },
+            {
+              name: 'EECS',
+              rows: [
+                {
+                  text: 'EECS',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: 'EECS'
+                }
+              ]
+            },
+            {
+              name: 'II',
+              rows: [
+                {
+                  text: 'II',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: 'II'
+                }
+              ]
+            },
+            {
+              name: 'Math',
+              rows: [
+                {
+                  text: '6.042',
+                  indentLevel: 0,
+                  checked: 'y',
+                  buttonText: '6.042'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          custom: true,
+          name: 'HASS Ideas',
+          id: 2,
+          cells: []
+        },
+        {
+          custom: true,
+          name: 'Want To Take',
+          id: 3,
+          cells: []
+        }
+      ]
     }
   },
 
@@ -369,6 +798,22 @@ export default {
   created: function () {
     this.refreshData((_, response) => {})
     this.updateSelected()
+  },
+
+  computed: {
+    customBuckets: function () {
+      var customBuckets = []
+
+      for (var i = 0; i < this.buckets.length; i++) {
+        var bucket = this.buckets[i]
+
+        if (bucket.custom) {
+          customBuckets.push(bucket)
+        }
+      }
+
+      return customBuckets
+    }
   }
 }
 </script>

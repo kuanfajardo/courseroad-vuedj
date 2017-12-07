@@ -15,7 +15,7 @@
         </b-nav-form>
 
         <b-nav-item-dropdown :text=bucketText right class="mr-sm-2 bucketdrop">
-          <b-dropdown-header id="header0">Buckets</b-dropdown-header>
+          <b-dropdown-header v-if="buckets.length > 0" id="header0">Buckets</b-dropdown-header>
           <b-dropdown-item v-for="bucket in buckets" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
           <b-dropdown-header id="header1">Semesters</b-dropdown-header>
           <b-dropdown-item v-for="semester in semesters" v-on:click=updateSemester(semester) href="#" :key="semester.id">{{ semester.name }}</b-dropdown-item>
