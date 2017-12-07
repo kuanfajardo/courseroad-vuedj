@@ -369,10 +369,8 @@ class RequirementFactory:
 
 
 class Bucket:
-    def __init__(self, req_obj:ListRequirement, bucket_id:int, custom=False):
+    def __init__(self, req_obj:ListRequirement):
         self.req_obj = req_obj
-        self.bucket_id = bucket_id
-        self.custom = custom
         self.roots = req_obj.requirements
 
     def check_sat(self, subjects:set):
@@ -384,13 +382,7 @@ class Bucket:
                 req.to_json(sat, root=True)
             ]
 
-        return {
-            "name": self.req_obj.name,
-            "id": self.bucket_id,
-            "custom": self.custom,
-            "cells": cells
-        }
-
+        return cells
 
 class Road:
     def __init__(self, road:dict, buckets:dict):

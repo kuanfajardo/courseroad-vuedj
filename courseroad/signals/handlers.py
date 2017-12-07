@@ -30,12 +30,11 @@ def create_bucket(sender, instance, **kwargs):
     pickle_file = 'courseroad/static/courseroad/' + instance.name + '.p'
 
     try:
-        print(pickle_file)
         req_obj = pickle.load(open(pickle_file, 'rb'))
     except:
         req_obj = engine.RequirementFactory.create(obj_name=instance.name)
 
-    json = engine.Bucket(req_obj, instance.index, instance.custom).check_sat(set())
+    cells = engine.Bucket(req_obj).check_sat(set())
 
-    instance.json = json
+    instance.cells = cells
     instance.requirement_obj = req_obj
