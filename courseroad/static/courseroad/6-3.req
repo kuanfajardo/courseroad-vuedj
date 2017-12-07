@@ -6,7 +6,7 @@
     "reqs": [
         {
             "idd": 2,
-            "name": "INTRO/PROGRAMMING",
+            "name": "Intro/Programming",
             "type": "path",
             "count": 1,
             "paths": [
@@ -18,7 +18,7 @@
                     "reqs": [
                         {
                             "idd": 3,
-                            "name": "INTRO",
+                            "name": "Intro",
                             "type": "leaf",
                             "count": 1,
                             "reqs": [
@@ -27,7 +27,7 @@
                         },
                         {
                             "idd": 4,
-                            "name": "PROGRAMMING",
+                            "name": "Programming",
                             "type": "leaf",
                             "count": -1,
                             "reqs": [
@@ -44,7 +44,7 @@
                     "reqs": [
                         {
                             "idd": 15,
-                            "name": "INTRO",
+                            "name": "Intro",
                             "type": "leaf",
                             "count": 1,
                             "reqs": [
@@ -53,7 +53,7 @@
                         },
                         {
                             "idd": 16,
-                            "name": "PROGRAMMING",
+                            "name": "Programming",
                             "type": "leaf",
                             "count": 1,
                             "reqs": [
@@ -66,7 +66,7 @@
         },
         {
             "idd": 5,
-            "name": "MATH",
+            "name": "Math",
             "type": "leaf",
             "count": -1,
             "reqs": [
@@ -75,7 +75,7 @@
         },
         {
             "idd": 6,
-            "name": "FOUNDATION",
+            "name": "Foundation",
             "type": "leaf",
             "count": -1,
             "reqs": [
@@ -84,7 +84,7 @@
         },
         {
             "idd": 7,
-            "name": "HEADER",
+            "name": "Header",
             "type": "req",
             "count": -1,
             "reqs": [
@@ -120,7 +120,7 @@
         },
         {
             "idd": 11,
-            "name": "COMMUNICATION",
+            "name": "Communication",
             "type": "leaf",
             "count": 1,
             "reqs": [
