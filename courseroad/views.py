@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from courseroad.serializers import UserSerializer, SubjectSerializer, UserSubjectSerializer, YearSerializer, SemesterSerializer
-from courseroad.models import Subject, UserSubject, Year, Semester#, Bucket
+from courseroad.serializers import UserSerializer, SubjectSerializer, UserSubjectSerializer, YearSerializer, SemesterSerializer, BucketSerializer
+from courseroad.models import Subject, UserSubject, Year, Semester, Bucket
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -177,17 +177,30 @@ class SubjectList(generics.ListCreateAPIView):
     serializer_class = SubjectSerializer
     permission_classes = (permissions.IsAdminUser,)
 
-    # def perform_create(self, serializer):
-    #     print(self.request.data["prerequisites"])
-
 
 class SubjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     permission_classes = (permissions.IsAdminUser,)
 
-    # def perform_update(self, serializer):
-    #     serializer.save(prerequisites=list(self.request["prerequisites"]))
+
+class BucketList(APIView):
+    def get(self, request, username):
+        buckets = Bucket.objects.filter(user=request.user)
+        serializer = BucketSerializer(buckets, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, username):
+        serializer = BucketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BucketDetail(APIView):
+    pass
 
 
 class Rules(APIView):
