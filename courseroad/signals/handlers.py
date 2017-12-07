@@ -27,9 +27,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_init, sender=models.Bucket)
 def create_bucket(sender, instance, **kwargs):
     # Will have name, type, index, custom - need to insert json and req_obj; user in update_fields
-    pickle_file = './static/courseroad/' + instance.name + '.p'
+    pickle_file = 'courseroad/static/courseroad/' + instance.name + '.p'
 
     try:
+        print(pickle_file)
         req_obj = pickle.load(open(pickle_file, 'rb'))
     except:
         req_obj = engine.RequirementFactory.create(obj_name=instance.name)
