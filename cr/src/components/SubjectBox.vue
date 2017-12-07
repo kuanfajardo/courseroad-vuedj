@@ -6,7 +6,7 @@
           <b-dropdown :text="navText" right id="bucketDrop" size="lg">
             <b-dropdown-header id="header0">Requirements</b-dropdown-header>
             <b-dropdown-item v-for="bucket in reqs" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
-            <b-dropdown-header id="header1">Buckets</b-dropdown-header>
+            <b-dropdown-header v-if="custom.length > 0" id="header1">Buckets</b-dropdown-header>
             <b-dropdown-item v-for="bucket in custom" v-on:click=updateBucket(bucket) href="#" :key="bucket.id">{{ bucket.name }}</b-dropdown-item>
           </b-dropdown>
         </b-col>
@@ -57,6 +57,11 @@
     computed: {
       navText: function () {
         var selected = this.buckets[this.selectedBucketID]
+
+        if (selected === undefined) {
+          return ''
+        }
+
         return selected.name
       },
 
@@ -70,7 +75,6 @@
             requirements.push(bucket)
           }
         }
-
         return requirements
       },
 
@@ -89,7 +93,13 @@
       },
 
       selectedCells: function () {
-        return this.buckets[this.selectedBucketID].cells
+        var bucket = this.buckets[this.selectedBucketID]
+
+        if (bucket === undefined) {
+          return []
+        }
+
+        return bucket.cells
       }
     },
 

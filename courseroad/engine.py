@@ -1,5 +1,5 @@
 import json
-# from courseroad.models import Subject
+from courseroad.models import Subject
 
 
 #------------------------------#
@@ -396,23 +396,13 @@ class Road:
                     self.subjects.add(subject)
 
     def check_buckets(self):
-        bucket_sat = {bucket: False for bucket in self.buckets}
+        bucket_dict = {bucket: [] for bucket in self.buckets}
 
-        for bucket in self.buckets:
-            req_obj = self.buckets[bucket]
-            sat = req_obj.is_satisfied(self.subjects)
+        for bucket, req_obj in self.buckets.items():
+            cells = Bucket(req_obj).check_sat(self.subjects)
+            bucket_dict[bucket] = cells
 
-            bucket_sat[bucket] = None
-
-        return bucket_sat
-
-    def check_major(self):
-        if self.major is None:
-            raise ValueError('self.major cannot be None')
-
-        # pickle_file = './static/courseroad/' + self.major + '.p'
-        # major_req = pickle.load(open(pickle_file, 'rb'))
-        return self.major.is_satisfied(self.subjects)
+        return bucket_dict
 
     def check_pre_reqs(self):
         pre_req_sat = {subject: False for subject in self.subjects}

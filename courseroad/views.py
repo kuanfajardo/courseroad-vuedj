@@ -225,17 +225,17 @@ class Rules(APIView):
 
     def get_reqs(self, user):
         reqs = {}
-        #
-        # for req in Bucket.object.filter(user=user):
-        #     reqs[req.name] = req.requirements_obj
+
+        for bucket in Bucket.objects.filter(user=user):
+            reqs[bucket.name] = bucket.requirement_obj
 
         return reqs
 
     def get(self, request, format=None):
         road_dict = self.get_road(request.user)
-        req_dict = self.get_reqs(request.user)
+        bucket_dict = self.get_reqs(request.user)
 
-        r = Road(road_dict, req_dict)
+        r = Road(road_dict, bucket_dict)
 
         # Check pre-requisites
         sat_dict = r.check_pre_reqs()
@@ -247,11 +247,12 @@ class Rules(APIView):
             user_subject_obj.save()
 
         # Check course
-        # bucket_dict = r.check_buckets()
-        #
-        # for bucket in bucket_dict:
-        #     bucket_obj = Bucket.objects.get(user=request.user, name=bucket)
-        #     bucket_obj.json = bucket_dict[bucket]
+        bucket_dict = r.check_buckets()
+
+        for bucket in bucket_dict:
+            bucket_obj = Bucket.objects.get(user=request.user, name=bucket)
+            bucket_obj.cells = bucket_dict[bucket]
+            bucket_obj.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
