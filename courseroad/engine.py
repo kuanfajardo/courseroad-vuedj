@@ -1,5 +1,5 @@
 import json
-from courseroad.models import Subject
+# from courseroad.models import Subject
 
 
 #------------------------------#
@@ -358,19 +358,26 @@ class RequirementFactory:
 
 
 class Bucket:
-    def __init__(self, req_obj:BaseRequirement, bucket_id:int, custom=False):
-        self.root = req_obj
+    def __init__(self, req_obj:ListRequirement, bucket_id:int, custom=False):
+        self.req_obj = req_obj
         self.bucket_id = bucket_id
         self.custom = custom
+        self.roots = req_obj.requirements
 
     def check_sat(self, subjects:set):
-        sat = Checker(self.root).check(subjects)
+        sat = Checker(self.req_obj).check(subjects)
+
+        cells = []
+        for req in self.roots:
+            cells += [
+                req.to_json(sat, root=True)
+            ]
 
         return {
-            "name": self.root.name,
+            "name": self.req_obj.name,
             "id": self.bucket_id,
             "custom": self.custom,
-            "cells": self.root.to_json(sat)
+            "cells": cells
         }
 
 
@@ -544,9 +551,11 @@ def test():
     sat = Checker(r).check(subj)
 
     ##
-    test_obj = r._raw_obj["reqs"][7]
+    # test_obj = r._raw_obj["reqs"][7]
+    # print(RequirementFactory.create(test_obj).to_json(sat, root=True))
 
-    print(RequirementFactory.create(test_obj).to_json(sat, root=True))
+    ##
+    print(Bucket(r, 0).check_sat(subj))
 
 
-test()
+# test()
