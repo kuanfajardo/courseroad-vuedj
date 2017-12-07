@@ -1,0 +1,179 @@
+{
+  "idd": 0,
+  "name": "GIRs: General Institute Requirements",
+  "type": "req",
+  "count": -1,
+  "reqs": [
+    {
+      "idd": 1,
+      "name": "Physics",
+      "type": "req",
+      "count": -1,
+      "reqs": [
+        {
+          "idd": 2,
+          "name": "Physics I",
+          "type": "leaf",
+          "count": 1,
+          "reqs": [
+            "8.01", "8.012", "8.01L", "8.011", "CC.801", "CC.8012", "ES.801", "ES.8012"
+          ]
+        },
+        {
+          "idd": 3,
+          "name": "Physics II",
+          "type": "leaf",
+          "count": 1,
+          "reqs": [
+            "8.02", "8.022", "8.021", "CC.802", "CC.8.022", "ES.802", "ES.8022"
+          ]
+        }
+      ]
+    },
+    {
+      "idd": 4,
+      "name": "Calculus",
+      "type": "req",
+      "count": -1,
+      "reqs": [
+        {
+          "idd": 5,
+          "name": "Calculus I",
+          "type": "leaf",
+          "count": 1,
+          "reqs": [
+            "18.01", "18.01A", "CC.181A", "ES.1801", "ES.1801A"
+          ]
+        },
+        {
+          "idd": 6,
+          "name": "Calculus II",
+          "type": "leaf",
+          "count": 1,
+          "reqs": [
+            "18.02", "18.022", "18.02A", "CC.1802", "CC.182A", "ES.1802", "ES.182A"
+          ]
+        }
+      ]
+    },
+    {
+      "idd": 7,
+      "name": "Biology",
+      "type": "leaf",
+      "count": 1,
+      "reqs": [
+        "7.012", "7.013", "7.014", "7.015", "7.016", "ES.7012", "ES.7013"
+      ]
+    },
+    {
+      "idd": 8,
+      "name": "Chemistry",
+      "type": "leaf",
+      "count": 1,
+      "reqs": [
+        "3.091", "5.111", "5.112", "ES.3091", "ES.5111", "ES.5112", "CC.5111"
+      ]
+    },
+    {
+      "idd": 9,
+      "name": "HASS",
+      "type": "req",
+      "count": -1,
+      "reqs": [
+        {
+          "idd": 10,
+          "name": "Distribution",
+          "type": "req",
+          "count": -1,
+          "reqs": [
+            {
+              "idd": 11,
+              "name": "HASS-H",
+              "type": "leaf",
+              "count": 1,
+              "tag": "HASS-H"
+            },
+            {
+              "idd": 12,
+              "name": "HASS-A",
+              "type": "leaf",
+              "count": 1,
+              "tag": "HASS-A"
+            },
+            {
+              "idd": 13,
+              "name": "HASS-S",
+              "type": "leaf",
+              "count": 1,
+              "tag": "HASS-S"
+            }
+          ]
+        },
+//        { TODO: support linking
+//          "idd": 14,
+//          "name": "Concentration",
+//          "type": "link",
+//          "link": "HASS-CONCENTRATION"
+//        },
+        {
+          "idd": 15,
+          "name": "Total",
+          "type": "leaf",
+          "count": 8,
+          "tag": "HASS"
+        }
+      ]
+    },
+    {
+      "idd": 16,
+      "name": "REST",
+      "type": "req",
+      "count": -1,
+      "reqs": [
+        {
+          "idd": 17,
+          "name": "REST-Major",
+          "type": "leaf",
+          "count": 1,
+          "tag": "REST-M"
+        },
+        {
+          "idd": 18,
+          "name": "REST-Other",
+          "type": "leaf",
+          "count": 1,
+          "tag": "REST-O"
+        }
+      ]
+    },
+    {
+      "idd": 19,
+      "name": "Institute Labs",
+      "type": "req",
+      "count": 1,
+      "reqs": [
+        {
+          "idd": 20,
+          "name": "Full Lab",
+          "type": "leaf",
+          "count": 1,
+          "tag": "LAB"
+        },
+        {
+          "idd": 21,
+          "name": "Half Labs",
+          "type": "leaf",
+          "count": 2,
+          "tag": "HALF-LAB"
+        }
+      ]
+    },
+    {
+      "idd": 22,
+      "name": "Communication",
+      "type": "leaf",
+      "count": 2,
+      "tag": "CI-H"
+    }
+  ]
+}
