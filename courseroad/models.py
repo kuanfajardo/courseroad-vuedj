@@ -32,7 +32,7 @@ class UserSubject(models.Model):
     subject = models.ForeignKey('courseroad.Subject', default=None)
 
     class Meta:
-        unique_together = (('subject', 'user'))
+        unique_together = (('subject', 'user'),)
 
 
 class Semester(models.Model):
@@ -47,7 +47,7 @@ class Semester(models.Model):
 
     class Meta:
         ordering = ('semester_id',)
-        unique_together = (('semester_id', 'year'), )
+        unique_together = (('semester_id', 'year'),)
 
 
 class Year(models.Model):
@@ -64,35 +64,12 @@ class Year(models.Model):
 
 class Bucket(models.Model):
     name = models.CharField(max_length=100)
-
     custom = models.BooleanField(default=False)
-
     # TODO: make into ChoiceField
     type = models.CharField(max_length=10)
-
-    index = models.IntegerField()
-
     user = models.ForeignKey('auth.User', related_name='buckets')
-
     requirement_obj = PickledObjectField()
     cells = PickledObjectField()
 
     class Meta:
-        unique_together = (('name', 'user'), ('index', 'user'))
-
-
-
-
-# class RequirementCell(models.Model):
-#     bucket = models.ForeignKey('courseroad.Bucket', related_name='cells')
-#     name = models.CharField(max_length=100)
-#
-# class RequirementRow(models.Model):
-#     text = models.CharField(max_length=300)
-#     indent_level = models.IntegerField(default=0)
-#     satisfied = models.BooleanField(default=False)
-#     buttonText = models.CharField(max_length=300)
-#     cell = models.ForeignKey('courseroad.RequirementCell', related_name='rows')
-
-
-
+        unique_together = (('name', 'user'),)
