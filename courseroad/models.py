@@ -61,10 +61,6 @@ class Year(models.Model):
         unique_together = (('year_id', 'user'), )
 
 
-class Profile(User):
-    class Meta:
-        proxy = True
-
 
 class Bucket(models.Model):
     name = models.CharField(max_length=100)
