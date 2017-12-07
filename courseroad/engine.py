@@ -241,7 +241,6 @@ class PathRequirement(BaseRequirement): # type == "path"
         ]
 
         for path in self.paths:
-            print(path)
             rows += path.to_json(sat, indentLevel + 1)
 
         if root:
@@ -337,10 +336,22 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
 
 class RequirementFactory:
     @classmethod
-    def create(cls, req_obj: object):
-        if type(req_obj) is str:
-            file_obj = open(req_obj)
-            req_obj = json.load(file_obj)
+    def create(cls, req_obj:object=None, filename:str=None, obj_name:str=None):
+        if req_obj is None:
+            if filename is not None:
+                file_obj = open(str(req_obj))
+                req_obj = json.load(file_obj)
+
+            elif obj_name is not None:
+                req_obj = {
+                    "idd": 0,
+                    "name": obj_name,
+                    "type": "req",
+                    "count": -1,
+                    "reqs": []
+                }
+            else:
+                raise ValueError("create(() requires object, filename, or obj_name")
 
         typ = req_obj["type"]
 
