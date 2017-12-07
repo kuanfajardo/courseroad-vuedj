@@ -26,7 +26,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_init, sender=models.Bucket)
 def create_bucket(sender, instance, **kwargs):
-    if instance.cells == '' and instance.requirement_obj == '':
+    if instance.cells == '' or instance.requirement_obj == '' or instance.cells == {}:
         pickle_file = 'courseroad/static/courseroad/' + instance.name + '.p'
 
         try:
