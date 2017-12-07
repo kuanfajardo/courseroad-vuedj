@@ -2,7 +2,7 @@
   <b-navbar toggleable="md" type="dark" sticky>
     <b-nav-toggle target="nav_collapse"></b-nav-toggle>
 
-    <b-navbar-brand href="#">courseroad</b-navbar-brand>
+    <b-navbar-brand href="#">courseroad++</b-navbar-brand>
     <b-collapse is-nav id="nav_collapse">
 
       <!-- Right aligned nav items -->
