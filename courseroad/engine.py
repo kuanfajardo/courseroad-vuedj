@@ -152,6 +152,10 @@ class BaseRequirement:
     def create_count_row(self, count:int, indentLevel:int, checked:bool):
         return self.create_row(str(count) + " of:", indentLevel, checked)
 
+    def create_path_row(self, path_index:int, indentLevel:int, checked:bool):
+        letter = "ABCDEFGHIJ"[path_index]
+        return self.create_row('Path ' + letter, indentLevel, checked)
+
 
 class ListRequirement(BaseRequirement): # type == "req"
     def __init__(self, req_obj):
@@ -246,8 +250,12 @@ class PathRequirement(BaseRequirement): # type == "path"
             self.create_count_row(self.count, indentLevel, sat[self.req_id])
         ]
 
-        for path in self.paths:
-            rows += path.to_json(sat, indentLevel + 1)
+        for i, path in enumerate(self.paths):
+            rows += [
+                self.create_path_row(i, indentLevel + 1, sat[path.req_id])
+            ]
+
+            rows += path.to_json(sat, indentLevel + 2)
 
         if root:
             return {
