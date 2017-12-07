@@ -1,14 +1,14 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from courseroad.models import Subject, UserSubject, Semester, Year
+from courseroad.models import Subject, UserSubject, Semester, Year, Bucket
 from rest_framework import validators
-
 
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = "__all__"
+
 
 class UserSubjectSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True)
@@ -38,10 +38,20 @@ class YearSerializer(serializers.ModelSerializer):
         fields =  "user", "semesters", "title", "year_id"
 
 
+class BucketSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username', read_only=True)
+    json = serializers.JSONField(default={})
+
+    class Meta:
+        model = Bucket
+        exclude = ('requirement_obj', 'user')
+
+
 class UserSerializer(serializers.ModelSerializer):
-    subjects = UserSubjectSerializer(many=True)#serializers.PrimaryKeyRelatedField(many=True, queryset=UserSubject.objects.all())
+    subjects = UserSubjectSerializer(many=True)
     years = YearSerializer(many=True, read_only=True)
+    buckets = BucketSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'subjects', "years")
+        fields = ('id', 'username', 'subjects', "years", "buckets")

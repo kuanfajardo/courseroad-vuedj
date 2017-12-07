@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from picklefield.fields import PickledObjectField
+
+from django.contrib.postgres.fields import JSONField
 from rest_framework import validators
 
 # Create your models here.
@@ -26,8 +29,10 @@ class UserSubject(models.Model):
     # title = models.CharField(max_length=200, blank=False)
     has_conflict = models.BooleanField(default=False)
     user = models.ForeignKey('auth.User', related_name='subjects', on_delete=models.CASCADE)
-
     subject = models.ForeignKey('courseroad.Subject', default=None)
+
+    class Meta:
+        unique_together = (('subject', 'user'))
 
 
 class Semester(models.Model):
@@ -35,11 +40,14 @@ class Semester(models.Model):
     semester_id = models.IntegerField()
     hidden = models.BooleanField(default=False)
     # subjects = models.ForeignKey('courseroad.UserSubject', related_name='semester', on_delete=models.CASCADE)
+
+    # TODO: make into choice field
     type = models.CharField(max_length=10)
     # user = models.ForeignKey('auth.User')
 
     class Meta:
         ordering = ('semester_id',)
+        unique_together = (('semester_id', 'year'), )
 
 
 class Year(models.Model):
@@ -50,12 +58,45 @@ class Year(models.Model):
 
     class Meta:
         ordering = ('year_id',)
+        unique_together = (('year_id', 'user'), )
 
 
+class Profile(User):
+    class Meta:
+        proxy = True
 
 
+class Bucket(models.Model):
+    name = models.CharField(max_length=100)
+
+    custom = models.BooleanField(default=False)
+
+    # TODO: make into ChoiceField
+    type = models.CharField(max_length=10)
+
+    index = models.IntegerField()
+
+    user = models.ForeignKey('auth.User', related_name='buckets')
+
+    requirement_obj = PickledObjectField()
+    json = PickledObjectField()
 
     class Meta:
+        unique_together = (('name', 'user'), ('index', 'user'))
+
+
+
+
+# class RequirementCell(models.Model):
+#     bucket = models.ForeignKey('courseroad.Bucket', related_name='cells')
+#     name = models.CharField(max_length=100)
+#
+# class RequirementRow(models.Model):
+#     text = models.CharField(max_length=300)
+#     indent_level = models.IntegerField(default=0)
+#     satisfied = models.BooleanField(default=False)
+#     buttonText = models.CharField(max_length=300)
+#     cell = models.ForeignKey('courseroad.RequirementCell', related_name='rows')
 
 
 
