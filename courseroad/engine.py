@@ -2,27 +2,9 @@ import json
 from courseroad.models import Subject
 
 
-class RequirementFactory:
-    @classmethod
-    def create(cls, req_obj: object):
-        if type(req_obj) is str:
-            file_obj = open(req_obj)
-            req_obj = json.load(file_obj)
-
-        typ = req_obj["type"]
-
-        if typ == "leaf":
-            if "reqs" in req_obj:
-                return LeafRequirement(req_obj)
-            if "tag" in req_obj:
-                return TagRequirement(req_obj)
-
-        if typ == "path":
-            return PathRequirement(req_obj)
-
-        if typ == "req":
-            return ListRequirement(req_obj)
-
+#------------------------------#
+#     LOGIC CHECK CLASSES      #
+#------------------------------#
 
 class Sat:
     def __init__(self, key, count=-1, sat:bool=True):
@@ -58,6 +40,10 @@ class Sat:
         for key, sat in other:
             if sat:
                 self._i += 1
+
+            if key in self._sat_dict:
+                if self._sat_dict[key] != sat: # Previously satisfied
+                    sat = True
 
             self._sat_dict.update({key: sat})
 
@@ -109,6 +95,10 @@ class Checker:
         pass
 
 
+#---------------------------#
+#    REQUIREMENT CLASSES    #
+#---------------------------#
+
 class BaseRequirement:
     def __init__(self, req_obj):
         """
@@ -127,6 +117,7 @@ class BaseRequirement:
             self.path_id = req_obj["pid"]
 
         self.checker = None
+        self._raw_obj = req_obj
 
     def is_satisfied(self, checker:Checker):
         """
@@ -141,72 +132,31 @@ class BaseRequirement:
 
         pass
 
-    def prepare_output(obj, sat, level=0):
-        typ = obj["type"]
-        name = obj["name"] if "name" in obj else None
-        reqs = obj["reqs"] if "reqs" in obj else None
-        idd = obj["idd"]
+    def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
+        pass
 
-        str_arr = []
-        if typ == "req":
-            name_str = name  # assumes each "req" type has a name
-            str_arr.append((name_str, level, sat[idd][0]))
+    @classmethod
+    def create_row_obj(cls, text, indentLevel, checked, buttonText):
+        return {
+            "text": text,
+            "indentLevel": indentLevel,
+            "checked": checked,
+            "buttonText": buttonText
+        }
 
-            for req in reqs:
-                str_arr += prepare_output(req, sat, level + 1)
+    def create_row(self, text:str, indentLevel:int, checked:bool, button:bool=False, buttonText:str=None):
+        return {
+            "text": text,
+            "indentLevel": indentLevel,
+            "checked": "y" if checked else "n",
+            "buttonText": text if button else buttonText if buttonText else ""
+        }
 
-            return str_arr
+    def create_button_row(self, text:str, indentLevel:int, checked:bool, buttonText:str=None):
+        return self.create_row(text, indentLevel, checked, button=True, buttonText=buttonText)
 
-        if typ == "leaf":
-            ct = obj["count"]
-            required = ct == -1
-            tag_req = "tag" in obj
-
-            if name:
-                str_arr.append((name, level, sat[idd][0]))  # remove Y/N from name level
-                level += 1
-
-            if tag_req:
-                str_arr.append(("* " + str(ct) + " class tagged as \'" + obj["tag"] + "\'", level, True
-                                if sat[idd][0]
-                                else False))
-
-                return str_arr
-
-            if required:
-                for subject in reqs:
-                    subj_str = subject
-                    str_arr.append((subj_str, level, True if sat[subject][0] else False))
-
-                return str_arr
-
-            else:
-                tri_str = str(obj["count"]) + " of: "
-                for i, option in enumerate(obj["reqs"]):
-                    tri_str += option
-
-                    if i != len(obj["reqs"]) - 1:
-                        tri_str += ", "
-
-                str_arr.append((tri_str, level, sat[idd][0]))
-
-                return str_arr
-
-        if typ == "path":
-            name_str = name  # assumes each path has a name
-            str_arr.append((name_str, level, sat[idd][0]))
-
-            level += 1
-            str_arr.append(("1 of:", level, sat[idd][0]))
-
-            for path in obj["paths"]:
-                name_str = "PATH " + str(path["pid"])
-                str_arr.append((name_str, level + 1, ""))
-
-                for req in path["reqs"]:
-                    str_arr += prepare_output(req, sat, level + 2)
-
-            return str_arr
+    def create_count_row(self, count:int, indentLevel:int, checked:bool):
+        return self.create_row(str(count) + " of:", indentLevel, checked)
 
 
 class ListRequirement(BaseRequirement): # type == "req"
@@ -235,6 +185,27 @@ class ListRequirement(BaseRequirement): # type == "req"
 
         return sat
 
+    def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
+        rows = []
+        if not self.required:
+            rows += [
+                # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
+                self.create_count_row(self.count, indentLevel, sat[self.req_id])
+            ]
+
+            indentLevel += 1
+
+        for req in self.requirements:
+            rows += req.to_json(sat, indentLevel)
+
+        if root:
+            return {
+                "name": self.name,
+                "rows": rows
+            }
+
+        return rows
+
 
 class PathRequirement(BaseRequirement): # type == "path"
     def __init__(self, req_obj):
@@ -261,6 +232,26 @@ class PathRequirement(BaseRequirement): # type == "path"
         checker._remove = True
         return sat
 
+    def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
+        rows = []
+
+        rows += [
+            # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
+            self.create_count_row(self.count, indentLevel, sat[self.req_id])
+        ]
+
+        for path in self.paths:
+            print(path)
+            rows += path.to_json(sat, indentLevel + 1)
+
+        if root:
+            return {
+                "name": self.name,
+                "rows": rows
+            }
+
+        return rows
+
 
 class TagRequirement(BaseRequirement): # type == "leaf", has TAG
     def __init__(self, req_obj):
@@ -279,6 +270,20 @@ class TagRequirement(BaseRequirement): # type == "leaf", has TAG
                 break
 
         return sat
+
+    def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
+        rows = [
+            # self.create_row_obj(self.tag, indentLevel, "y" if sat[self.req_id] else "n", "")
+            self.create_row(self.tag, indentLevel, sat[self.req_id])
+        ]
+
+        if root:
+            return {
+                "name": self.name,
+                "rows": rows
+            }
+
+        return rows
 
 
 class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
@@ -301,6 +306,73 @@ class LeafRequirement(BaseRequirement): # type == "leaf", has REQS
 
         return sat
 
+    def to_json(self, sat:Sat, indentLevel:int=0, root:bool=False):
+        rows = []
+        if not self.required:
+            rows += [
+                # self.create_row_obj(str(self.count) + " of:", indentLevel, "y" if sat[self.req_id] else "n", "")
+                self.create_count_row(self.count, indentLevel, sat[self.req_id])
+            ]
+
+            indentLevel += 1
+
+        for req in self.requirements:
+            rows += [
+                # self.create_row_obj(req, indentLevel, "y" if sat[req] else "n", req)
+                self.create_button_row(req, indentLevel, sat[req])
+            ]
+
+        if root:
+            return {
+                "name": self.name,
+                "rows": rows
+            }
+
+        return rows
+
+
+#---------------------------#
+#     "PUBLIC" CLASSES      #
+#---------------------------#
+
+class RequirementFactory:
+    @classmethod
+    def create(cls, req_obj: object):
+        if type(req_obj) is str:
+            file_obj = open(req_obj)
+            req_obj = json.load(file_obj)
+
+        typ = req_obj["type"]
+
+        if typ == "leaf":
+            if "reqs" in req_obj:
+                return LeafRequirement(req_obj)
+            if "tag" in req_obj:
+                return TagRequirement(req_obj)
+
+        if typ == "path":
+            return PathRequirement(req_obj)
+
+        if typ == "req":
+            return ListRequirement(req_obj)
+
+
+class Bucket:
+    def __init__(self, req_obj:BaseRequirement, bucket_id:int, custom=False):
+        self.root = req_obj
+        self.bucket_id = bucket_id
+        self.custom = custom
+
+    def check_sat(self, subjects:set):
+        sat = Checker(self.root).check(subjects)
+
+        return {
+            "name": self.root.name,
+            "id": self.bucket_id,
+            "custom": self.custom,
+            "cells": self.root.to_json(sat)
+        }
+
 
 class Road:
     def __init__(self, road:dict, buckets:dict):
@@ -312,7 +384,6 @@ class Road:
             for semester in year.values():
                 for subject in semester:
                     self.subjects.add(subject)
-
 
     def check_buckets(self):
         bucket_sat = {bucket: False for bucket in self.buckets}
@@ -458,6 +529,11 @@ class Road:
 
         return sat_pre_req() and sat_co_req()
 
+
+#----------------#
+#     TESTS      #
+#----------------#
+
 def test():
     import pickle
 
@@ -466,5 +542,11 @@ def test():
     subj = {'6.01', '6.0001', '6.004', '6.006', '6.009', '6.031'}
 
     sat = Checker(r).check(subj)
-    print(sat)
 
+    ##
+    test_obj = r._raw_obj["reqs"][7]
+
+    print(RequirementFactory.create(test_obj).to_json(sat, root=True))
+
+
+test()
