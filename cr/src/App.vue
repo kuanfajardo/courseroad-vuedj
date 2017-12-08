@@ -705,6 +705,9 @@ export default {
             case 0:
               this.navBarText = 'Subject does not exist. \uD83D\uDE15'
               break
+            case 1:
+              this.navBarText = 'You have already added ' + subject.subjectID
+              break
             default:
               this.navBarText = 'Oops! Looks like something went wrong \uD83D\uDE4A'
           }

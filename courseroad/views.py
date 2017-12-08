@@ -45,13 +45,33 @@ class UserSubjectList(APIView):
         except ObjectDoesNotExist:
             return None
 
+    def get_user_subject(self, user, subject):
+        try:
+            return UserSubject.objects.get(subject=subject, user=user)
+        except:
+            return None
+
     def post(self, request, username, year_id, semester_id):
         year = Year.objects.get(user=request.user, year_id=year_id)
         semester = Semester.objects.get(year=year, semester_id=semester_id)
         subject = self.get_subject(request.data['subjectID'])
 
         if subject is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error_type": 0})
+            error_obj = {
+                "error_type": 0,
+                "description": "Subject does not exist."
+            }
+
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=error_obj)
+
+        user_subject = self.get_user_subject(request.user, subject)
+        if user_subject is not None:
+            error_obj = {
+                "error_type": 1,
+                "description": "Already taking this subject."
+            }
+
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=error_obj)
 
         serializer = UserSubjectSerializer(data=request.data)
         if serializer.is_valid():
