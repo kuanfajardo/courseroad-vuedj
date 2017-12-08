@@ -6,4 +6,4 @@ echo 'Deploying to Firebase'
 firebase deploy
 echo 'Done...'
 
-open https://courseroad-8b1c5.firebaseapp.com/
+open https://courseroad.co/
